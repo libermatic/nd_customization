@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include nd_customization *.css
+recursive-include nd_customization *.csv
+recursive-include nd_customization *.html
+recursive-include nd_customization *.ico
+recursive-include nd_customization *.js
+recursive-include nd_customization *.json
+recursive-include nd_customization *.md
+recursive-include nd_customization *.png
+recursive-include nd_customization *.py
+recursive-include nd_customization *.svg
+recursive-include nd_customization *.txt
+recursive-exclude nd_customization *.pyc
