@@ -12,6 +12,17 @@ app_color = "#E91E63"
 app_email = "info@libermatic.com"
 app_license = "MIT"
 
+error_report_email = "support@libermatic.com"
+
+fixtures = [
+    {
+        'doctype': 'Custom Field',
+        'filters': [['name', 'in', [
+            'Patient-age_in_years',
+        ]]]
+    },
+]
+
 # Includes in <head>
 # ------------------
 
@@ -27,7 +38,9 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    'Patient': 'public/js/patient.js',
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
