@@ -19,6 +19,11 @@ fixtures = [
         'doctype': 'Custom Field',
         'filters': [['name', 'in', [
             'Patient-age_in_years',
+            'Sales Invoice-patient',
+            'Sales Invoice-patient_name',
+            'Sales Invoice-ref_physician',
+            'Sales Invoice Item-reference_dt',
+            'Sales Invoice Item-reference_dn',
         ]]]
     },
 ]
