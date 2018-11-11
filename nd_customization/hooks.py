@@ -16,6 +16,20 @@ error_report_email = "support@libermatic.com"
 
 fixtures = [
     {
+        'doctype': 'Property Setter',
+        'filters': [['name', 'in', [
+            'Sales Invoice-project-hidden',
+            'Sales Invoice-naming_series-options',
+            'Sales Invoice-naming_series-default',
+            'Purchase Invoice-naming_series-options',
+            'Purchase Invoice-naming_series-default',
+            'Payment Entry-naming_series-options',
+            'Payment Entry-naming_series-default',
+            'Lab Test-naming_series-options',
+            'Lab Test-naming_series-default',
+        ]]],
+    },
+    {
         'doctype': 'Custom Field',
         'filters': [['name', 'in', [
             'Patient-age_in_years',
