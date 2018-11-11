@@ -12,22 +12,59 @@ app_color = "#E91E63"
 app_email = "info@libermatic.com"
 app_license = "MIT"
 
+error_report_email = "support@libermatic.com"
+
+fixtures = [
+    {
+        'doctype': 'Property Setter',
+        'filters': [['name', 'in', [
+            'Sales Invoice-project-hidden',
+            'Sales Invoice-naming_series-options',
+            'Sales Invoice-naming_series-default',
+            'Sales Invoice-default_print_format',
+            'Purchase Invoice-naming_series-options',
+            'Purchase Invoice-naming_series-default',
+            'Payment Entry-naming_series-options',
+            'Payment Entry-naming_series-default',
+            'Lab Test-naming_series-options',
+            'Lab Test-naming_series-default',
+        ]]],
+    },
+    {
+        'doctype': 'Custom Field',
+        'filters': [['name', 'in', [
+            'Patient-age_in_years',
+            'Sales Invoice-patient',
+            'Sales Invoice-patient_name',
+            'Sales Invoice-ref_physician',
+            'Sales Invoice Item-reference_dt',
+            'Sales Invoice Item-reference_dn',
+        ]]]
+    },
+]
+
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/nd_customization/css/nd_customization.css"
 # app_include_js = "/assets/nd_customization/js/nd_customization.js"
+app_include_js = '/assets/js/nd_customization.min.js'
 
 # include js, css files in header of web template
 # web_include_css = "/assets/nd_customization/css/nd_customization.css"
 # web_include_js = "/assets/nd_customization/js/nd_customization.js"
 
+# NOTE: disable all JS Includes in prod
+
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    'Patient': 'public/js/cscripts/patient.js',
+    'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -82,13 +119,13 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#     "*": {
-#         "on_update": "method",
-#         "on_cancel": "method",
-#         "on_trash": "method"
-#    }
-# }
+doc_events = {
+    'Sales Invoice': {
+        'validate': 'nd_customization.doc_events.sales_invoice.validate',
+        'on_submit': 'nd_customization.doc_events.sales_invoice.on_submit',
+        'on_cancel': 'nd_customization.doc_events.sales_invoice.on_cancel',
+    },
+}
 
 # Scheduled Tasks
 # ---------------

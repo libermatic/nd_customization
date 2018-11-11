@@ -1,0 +1,192 @@
+<style>
+  @media screen {
+    .print-format {
+      height: {{ '148mm' if is_landscape else '210mm' }};
+      width: {{ '210mm' if is_landscape else '148mm' }};
+      min-height: {{ '148mm' if is_landscape else '210mm' }};
+      max-width: {{ '210mm' if is_landscape else '148mm' }};
+      padding: 10mm;
+    }
+  }
+  .nd-inv {
+    display: flex;
+    flex-flow: column nowrap;
+    min-height: calc({{ '148mm' if is_landscape else '210mm' }} - 2 * 10mm);
+  }
+  .nd-inv > section {
+    font-size: 0.9em;
+  }
+  .nd-inv-head {
+    text-transform: uppercase;
+    border-top: 1px solid {{ style.border_color }};
+    padding: 0.4em 0;
+    text-align: center;
+  }
+  .nd-inv-head > div {
+    display: inline;
+  }
+  .nd-inv-head > div:before {
+    content: '•';
+    margin: 0 0.5em;
+  }
+  .nd-inv-head > div:first-of-type:before {
+    content: '';
+    margin: 0 0.5em;
+  }
+  .nd-inv-head .badge {
+    font-size: 0.8em;
+    font-variant: all-small-caps;
+    background-color: #36414c;
+    color: #fff;
+  }
+  .nd-inv-details {
+    margin: 0.8em 0;
+  }
+  .nd-inv-details dl {
+    margin: 0;
+  }
+  .nd-inv-details dl > * {
+    display: inline;
+    font-weight: normal;
+  }
+  .nd-inv-details dt:after {
+    content: ':';
+    margin: 0 0.5em;
+  }
+  .nd-inv-items {
+    flex: auto;
+  }
+  .nd-inv-items > table {
+    width: 100%;
+  }
+  .nd-inv-items > table th, .nd-inv-items > table td {
+    padding: 2pt !important;
+  }
+  .nd-inv-items > table > tfoot td:first-of-type {
+    text-align: right;
+  }
+  .nd-inv-items > table > tfoot > tr:first-of-type > td {
+    border-top: 1px solid {{ style.border_color }};
+  }
+  .nd-inv-footer {
+    margin-top: 0.4em;
+    border-top: 1px solid {{ style.border_color }};
+    padding: 0.4em 0;
+  }
+  .nd-strong {
+    font-weight: bold;
+  }
+</style>
+
+<div class="nd-inv">
+  {% if not no_letterhead and doc.letter_head %}
+  {{ frappe.db.get_value('Letter Head', doc.letter_head, 'content') }}
+  {% endif %}
+
+  <section class="nd-inv-head">
+    {% if doc.docstatus != 1 %}
+    <span class="badge">{{ doc.status }}</span>
+    {% endif %}
+    <div>Sales Invoice</div>
+    <div class="nd-strong">{{ doc.name }}</div>
+    <div>{{ doc.get_formatted('posting_date') }}</div>
+    <div>{{ doc.get_formatted('posting_time') }}</div>
+  </section>
+
+  {% set patient = frappe.get_doc('Patient', doc.patient) %}
+
+  <section class="nd-inv-details">
+    <div class="row">
+      <dl class="col-xs-6">
+        <dt>Name</dt>
+        <dd>{{ doc.patient_name }} (<span class="nd-strong">{{ doc.patient }}</span>)</dd>
+      </dl>
+      <dl class="col-xs-6">
+        <dt>Bio</dt>
+        <dd>{{ patient.get_age() }} / {{ patient.sex }}</dd>
+      </dl>
+    </div>
+    <div class="row">
+      <dl class="col-xs-6">
+        <dt>Contact</dt>
+        <dd>{{ patient.mobile }}</dd>
+      </dl>
+      <dl class="col-xs-6">
+        <dt>Referred By</dt>
+        <dd>{{ doc.ref_physician }}</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="nd-inv-items">
+    <table>
+      <thead>
+        <th>#</th>
+        <th>Particulars</th>
+        <th>Department</th>
+        <th>Delivery Date</th>
+        <th>Delivery Mode</th>
+        <th class="text-right">Amount</th>
+      </thead>
+      <tbody>
+        {% for item in doc.items %}
+        {% set lab_test = frappe.get_doc('Lab Test', item.reference_dn)
+        if item.reference_dt == 'Lab Test' and item.reference_dn else None
+        %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ item.item_name }}</td>
+          <td>{{ lab_test and lab_test.department }}</td>
+          <td>{{ lab_test and lab_test.get_formatted('result_date') }}</td>
+          <td>{{ lab_test and lab_test.report_preference }}</td>
+          <td class="text-right">{{ item.get_formatted('amount', doc) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5">
+            Total
+            {% if doc.total_taxes_and_charges %}
+            (Inclusive of GST {{ doc.get_formatted('total_taxes_and_charges') }})
+            {% endif %}
+          </td>
+          <td class="text-right">{{ doc.get_formatted('total') }}</td>
+        </tr>
+        <tr>
+          <td colspan="5">Discount</td>
+          <td class="text-right">{{ doc.get_formatted('discount_amount') }}</td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            Grant Total
+            {% if doc.rounding_adjustment %}
+            (Round Off: {{ doc.get_formatted('rounding_adjustment') }})
+            {% endif %}
+          </td>
+          <td class="text-right nd-strong">{{ doc.get_formatted('rounded_total') }}</td>
+        </tr>
+        <tr>
+          <td colspan="5">Paid</td>
+          <td class="text-right">{{ doc.get_formatted('paid_amount') }}</td>
+        </tr>
+        <tr>
+          <td colspan="5">Outstanding</td>
+          <td class="text-right nd-strong">{{ doc.get_formatted('outstanding_amount') }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+  <section class="nd-inv-footer">
+    <div class="row">
+      <div class="col-xs-6">
+        <span>+</span>
+        <span>{{ doc.owner }}</span>
+      </div>
+      <div class="col-xs-6">
+        <span>&#9113;</span>
+        <span>{{ frappe.user }} @ {{ frappe.utils.format_datetime(frappe.utils.now()) }}</span>
+      </div>
+    </div>
+  </section>
+</div>
