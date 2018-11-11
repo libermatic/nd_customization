@@ -1,6 +1,27 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import frappe
+from frappe.utils import flt, fmt_money
+
+
+def validate(doc, method):
+    if doc.additional_discount_percentage or doc.discount_amount:
+        for item in doc.items:
+            max_discount = frappe.db.get_value(
+                'Item', item.item_code, 'max_discount'
+            )
+            discount = flt(item.net_rate) / flt(item.price_list_rate) * 100.0
+            if max_discount and discount > flt(max_discount):
+                min_price = flt(item.price_list_rate) * \
+                    (1.0 - max_discount / 100.0)
+                frappe.throw(
+                    'Maxiumm discount for Item {0} is {1}%. Net Rate cannot '
+                    'be less than {2}'.format(
+                        item.item_code,
+                        max_discount,
+                        fmt_money(min_price, currency=doc.currency),
+                    )
+                )
 
 
 def on_submit(doc, method):

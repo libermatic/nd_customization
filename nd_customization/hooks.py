@@ -120,6 +120,7 @@ doctype_js = {
 
 doc_events = {
     'Sales Invoice': {
+        'validate': 'nd_customization.doc_events.sales_invoice.validate',
         'on_submit': 'nd_customization.doc_events.sales_invoice.on_submit',
         'on_cancel': 'nd_customization.doc_events.sales_invoice.on_cancel',
     },
