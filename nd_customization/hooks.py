@@ -118,13 +118,12 @@ doctype_js = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#     "*": {
-#         "on_update": "method",
-#         "on_cancel": "method",
-#         "on_trash": "method"
-#    }
-# }
+doc_events = {
+    'Sales Invoice': {
+        'on_submit': 'nd_customization.doc_events.sales_invoice.on_submit',
+        'on_cancel': 'nd_customization.doc_events.sales_invoice.on_cancel',
+    },
+}
 
 # Scheduled Tasks
 # ---------------
