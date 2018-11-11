@@ -48,17 +48,21 @@ fixtures = [
 # include js, css files in header of desk.html
 # app_include_css = "/assets/nd_customization/css/nd_customization.css"
 # app_include_js = "/assets/nd_customization/js/nd_customization.js"
+app_include_js = '/assets/js/nd_customization.min.js'
 
 # include js, css files in header of web template
 # web_include_css = "/assets/nd_customization/css/nd_customization.css"
 # web_include_js = "/assets/nd_customization/js/nd_customization.js"
+
+# NOTE: disable all JS Includes in prod
 
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
 doctype_js = {
-    'Patient': 'public/js/patient.js',
+    'Patient': 'public/js/cscripts/patient.js',
+    'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}

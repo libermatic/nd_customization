@@ -11,7 +11,6 @@ frappe.ui.form.on('Patient', {
         label: 'Age',
       },
     });
-    console.log(frm.age_in_years);
   },
   refresh: function(frm) {
     frm.age_in_years.refresh();
