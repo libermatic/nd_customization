@@ -21,6 +21,7 @@ fixtures = [
             'Sales Invoice-project-hidden',
             'Sales Invoice-naming_series-options',
             'Sales Invoice-naming_series-default',
+            'Sales Invoice-default_print_format',
             'Purchase Invoice-naming_series-options',
             'Purchase Invoice-naming_series-default',
             'Payment Entry-naming_series-options',
