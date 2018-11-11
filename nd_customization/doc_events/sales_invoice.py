@@ -10,12 +10,13 @@ def validate(doc, method):
             max_discount = frappe.db.get_value(
                 'Item', item.item_code, 'max_discount'
             )
-            discount = flt(item.net_rate) / flt(item.price_list_rate) * 100.0
+            discount = (1.0 - flt(item.net_rate) / flt(item.price_list_rate)) \
+                * 100.0
             if max_discount and discount > flt(max_discount):
                 min_price = flt(item.price_list_rate) * \
                     (1.0 - max_discount / 100.0)
                 frappe.throw(
-                    'Maxiumm discount for Item {0} is {1}%. Net Rate cannot '
+                    'Maximum discount for Item {0} is {1}%. Net Rate cannot '
                     'be less than {2}'.format(
                         item.item_code,
                         max_discount,
