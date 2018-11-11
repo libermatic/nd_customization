@@ -1,6 +1,3 @@
 {
-  "js/nd_customization.min.js": [
-    "public/js/cscripts/patient.js",
-    "public/js/cscripts/sales_invoice.js"
-  ]
+  "js/nd_customization.min.js": []
 }
