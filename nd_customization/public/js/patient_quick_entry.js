@@ -58,8 +58,8 @@ frappe.ui.form.PatientQuickEntryForm = frappe.ui.form.QuickEntryForm.extend({
         fieldtype: 'Column Break',
       },
       {
-        label: 'Location',
-        fieldname: 'location',
+        label: 'Address',
+        fieldname: 'address_line1',
         fieldtype: 'Data',
       },
     ];
