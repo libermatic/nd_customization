@@ -69,12 +69,22 @@
     border-top: 1px solid {{ style.border_color }};
   }
   .nd-inv-footer {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
     margin-top: 0.4em;
-    border-top: 1px solid {{ style.border_color }};
-    padding: 0.4em 0;
+  }
+  .nd-inv-footer > div {
+    text-align: center;
+    width: 50%;
+    padding: 2pt;
   }
   .nd-strong {
     font-weight: bold;
+  }
+  .nd-empasize {
+    font-style: italic;
+    border-bottom: 1px solid {{ style.border_color }};
   }
 </style>
 
@@ -108,12 +118,18 @@
     </div>
     <div class="row">
       <dl class="col-xs-6">
-        <dt>Contact</dt>
-        <dd>{{ patient.mobile }}</dd>
+        <dt>Location</dt>
+        <dd>{{ patient.location or '' }}</dd>
       </dl>
       <dl class="col-xs-6">
         <dt>Referred By</dt>
-        <dd>{{ doc.ref_physician }}</dd>
+        <dd>{{ doc.ref_physician or '' }}</dd>
+      </dl>
+    </div>
+    <div class="row">
+      <dl class="col-xs-6">
+        <dt>Mobile</dt>
+        <dd>{{ patient.mobile or '' }}</dd>
       </dl>
     </div>
   </section>
@@ -167,6 +183,9 @@
           <td class="text-right nd-strong">{{ doc.get_formatted('rounded_total') }}</td>
         </tr>
         <tr>
+          <td colspan="6" class="text-right nd-empasize">{{ doc.in_words }}</td>
+        </tr>
+        <tr>
           <td colspan="5">Paid</td>
           <td class="text-right">{{ doc.get_formatted('paid_amount') }}</td>
         </tr>
@@ -178,15 +197,12 @@
     </table>
   </section>
   <section class="nd-inv-footer">
-    <div class="row">
-      <div class="col-xs-6">
-        <span>+</span>
-        <span>{{ doc.owner }}</span>
-      </div>
-      <div class="col-xs-6">
-        <span>&#9113;</span>
-        <span>{{ frappe.user }} @ {{ frappe.utils.format_datetime(frappe.utils.now()) }}</span>
-      </div>
+    <div class="nd-empasize">
+      Received
+    </div>
+    <div>
+      <span>&#9113;</span>
+      <span>{{ frappe.get_fullname() }} @ {{ frappe.utils.format_datetime(frappe.utils.now()) }}</span>
     </div>
   </section>
 </div>
