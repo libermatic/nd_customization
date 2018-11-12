@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.utils import flt, fmt_money
+from erpnext.healthcare.doctype.lab_test.lab_test \
+    import load_result_format
 
 
 def validate(doc, method):
@@ -41,6 +43,7 @@ def on_submit(doc, method):
                 if template:
                     test = _make_lab_test(patient, template, doc)
                     test.insert(ignore_permissions=True)
+                    load_result_format(test, template, None, None)
                     frappe.db.set_value(
                         'Sales Invoice Item',
                         item.name,
@@ -60,6 +63,7 @@ def on_submit(doc, method):
             )
         else:
             frappe.msgprint('No Lab Test created.')
+        doc.reload()
 
 
 def on_cancel(doc, method):

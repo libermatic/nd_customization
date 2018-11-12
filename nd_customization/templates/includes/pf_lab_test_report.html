@@ -1,0 +1,204 @@
+<style>
+  @media screen {
+    .print-format {
+      {% if no_letterhead %}
+      padding: 10mm;
+      {% else %}
+      padding: calc({{ header_height or '0mm' }} + 10mm) 10mm
+        calc({{ footer_height or '0mm' }} + 10mm);
+      {% endif %}
+    }
+  }
+  @media print {
+    {% if not no_letterhead %}
+    .print-format {
+      padding: {{ header_height or '0mm' }} 0 {{ footer_height or '0mm' }};
+    }
+    {% endif %}
+  }
+  .nd-status-indicator .badge {
+    font-variant: all-small-caps;
+    background-color: #36414c;
+    color: #fff;
+  }
+  .nd-rep-details {
+    border-top: 1px solid {{ style.border_color }};
+    margin: 0.8em 0;
+    padding-top: 0.4em;
+    line-height: 1.6;
+  }
+  .nd-rep-details dl {
+    margin: 0;
+  }
+  .nd-rep-details dl > * {
+    display: inline;
+    font-weight: normal;
+  }
+  .nd-rep-details dt:after {
+    content: ':';
+    margin: 0 0.5em;
+  }
+  .nd-rep-title {
+    border-top: 1px solid {{ style.border_color }};
+    padding: 0.3em 0 0.6em;
+  }
+  .nd-rep-title > h1 {
+    font-size: 1.3em;
+    margin: 0;
+  }
+  .nd-rep-items > table, .nd-rep-items > div {
+    margin: 0.8em 0;
+    width: 100%;
+  }
+  .nd-rep-items > table > caption {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0 0 0.6em;
+    color: inherit;
+  }
+  .nd-rep-items > table th, .nd-rep-items > table td {
+    padding: 3pt !important;
+  }
+  .nd-rep-items tr.nd-separate > td {
+    border-top: 1px solid {{ style.border_color }};
+  }
+  .nd-rep-items tr.nd-indent > td {
+    padding-left: 1.5em !important;
+  }
+  .nd-rep-comment {
+    flex: auto;
+  }
+  .nd-strong {
+    font-weight: bold;
+  }
+</style>
+
+<div class="nd-rep">
+  {% if not no_letterhead and letter_head %}
+  {{ letter_head }}
+  {% endif %}
+  {% if doc.docstatus != 1 %}
+  <section class="nd-status-indicator text-right">
+    <div class="badge">{{ doc.status }}</div>
+  </section>
+  {% elif frappe.db.get_value(
+    'Healthcare Settings', None, 'require_test_result_approval'
+    ) == 1 and doc.approval_status != 'Approved' %}
+  <section class="nd-status-indicator text-right">
+    <div class="badge">Pending Approval</div>
+  </section>
+  {% endif %}
+  <section class="nd-rep-details">
+    {% set patient = frappe.get_doc('Patient', doc.patient) %}
+    <div class="row">
+      <dl class="col-xs-6">
+        <dt>Name</dt>
+        <dd><span class="nd-strong">{{ doc.patient_name }}</span> ({{ doc.patient }})</dd>
+      </dl>
+      <dl class="col-xs-6">
+        <dt>Referred By</dt>
+        <dd>{{ doc.physician or '' }}</dd>
+      </dl>
+    </div>
+    <div class="row">
+      <dl class="col-xs-6">
+        <dt>Bio</dt>
+        <dd>{{doc.patient_age }} / {{ doc.patient_sex }}</dd>
+      </dl>
+      <dl class="col-xs-6">
+        <dt>Test ID</dt>
+        <dd><span class="nd-strong">{{ doc.name }}</span></dd>
+      </dl>
+    </div>
+    <div class="row">
+      <dl class="col-xs-6">
+        <dt>Contact</dt>
+        <dd>{{ patient.mobile or '' }}</dd>
+        <dd>{{ patient.address_line1 or '' }}</dd>
+      </dl>
+      <dl class="col-xs-6">
+        <dt>Invoice</dt>
+        <dd>{{ doc.invoice }}</dd>
+      </dl>
+    </div>
+  </section>
+  <section class="nd-rep-title">
+    <h1>Department of {{ doc.department }}</h1>
+  </section>
+  <section class="nd-rep-items">
+    {% if doc.normal_test_items %}
+    <table>
+      <caption>{{ doc.test_name }}</caption>
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th class="text-right">Result</th>
+          <th>Units</th>
+          <th>Biological Reference</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in doc.normal_test_items %}
+        {% set will_separate = loop.index0 > 0 and not item.normal_range and
+          not item.test_uom and not item.result_value and not item.test_event
+          and item.test_name %}
+        {% set will_indent = not item.test_name and item.test_event %}
+        <tr class="{{ 'nd-separate' if will_separate else '' -}}
+          {{- 'nd-indent' if will_indent else ''  }}">
+          <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
+          <td class="text-right">{{ item.result_value or '' }}</td>
+          <td>{{ item.test_uom or '' }}</td>
+          <td>{{ item.normal_range or '' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% if doc.special_test_items %}
+    <table>
+      <caption>{{ doc.test_name }}</caption>
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in doc.special_test_items %}
+        <tr>
+          <td>{{ item.test_particulars }}</td>
+          <td>{{ item.result_value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% if doc.sensitivity_test_items %}
+    <table>
+      <caption>{{ doc.test_name }}</caption>
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in doc.sensitivity_test_items %}
+        <tr>
+          <td>{{ item.antibiotic }}</td>
+          <td>{{ item.antibiotic_sensitivity }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% if doc.custom_result %}
+    <div>{{ doc.custom_result }}</div>
+    {% endif %}
+  </section>
+  <section class="nd-rep-comment">
+    {% if doc.test_comment %}
+    <div>{{ doc.test_comment }}</div>
+    {% endif %}
+  </section>
+</div>

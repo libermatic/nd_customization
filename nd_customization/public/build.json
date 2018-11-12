@@ -1,3 +1,5 @@
 {
-  "js/nd_customization.min.js": []
+  "js/nd_customization.min.js": [
+    "public/js/patient_quick_entry.js"
+  ]
 }
