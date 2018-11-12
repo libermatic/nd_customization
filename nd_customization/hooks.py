@@ -28,6 +28,7 @@ fixtures = [
             'Payment Entry-naming_series-default',
             'Lab Test-naming_series-options',
             'Lab Test-naming_series-default',
+            'Lab Test-default_print_format',
             'Patient-quick_entry',
         ]]],
     },
