@@ -13,15 +13,18 @@ frappe.ui.form.on('Patient', {
     });
   },
   refresh: function(frm) {
-    frm.age_in_years.refresh();
-    frm.age_in_years.$input.change(function() {
-      const age = frm.age_in_years.get_value();
-      frm.set_value(
-        'dob',
-        frappe.datetime.obj_to_str(
-          moment(frappe.datetime.year_start()).subtract(age, 'years')
-        )
-      );
-    });
+    frm.toggle_display('age_in_years', frm.doc.__islocal);
+    if (frm.doc.__islocal) {
+      frm.age_in_years.refresh();
+      frm.age_in_years.$input.change(function() {
+        const age = frm.age_in_years.get_value();
+        frm.set_value(
+          'dob',
+          frappe.datetime.obj_to_str(
+            moment(frappe.datetime.year_start()).subtract(age, 'years')
+          )
+        );
+      });
+    }
   },
 });

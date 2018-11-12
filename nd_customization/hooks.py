@@ -28,12 +28,14 @@ fixtures = [
             'Payment Entry-naming_series-default',
             'Lab Test-naming_series-options',
             'Lab Test-naming_series-default',
+            'Patient-quick_entry',
         ]]],
     },
     {
         'doctype': 'Custom Field',
         'filters': [['name', 'in', [
             'Patient-age_in_years',
+            'Patient-location',
             'Sales Invoice-patient',
             'Sales Invoice-patient_name',
             'Sales Invoice-ref_physician',
