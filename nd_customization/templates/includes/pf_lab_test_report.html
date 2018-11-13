@@ -16,6 +16,11 @@
     }
     {% endif %}
   }
+  .nd-rep {
+    display: flex;
+    flex-flow: column nowrap;
+    min-height: calc(297mm - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * 10mm);
+  }
   .nd-status-indicator .badge {
     font-variant: all-small-caps;
     background-color: #36414c;
@@ -57,16 +62,26 @@
     color: inherit;
   }
   .nd-rep-items > table th, .nd-rep-items > table td {
-    padding: 3pt !important;
+    padding: 2pt !important;
   }
   .nd-rep-items tr.nd-separate > td {
     border-top: 1px solid {{ style.border_color }};
   }
-  .nd-rep-items tr.nd-indent > td {
+  .nd-rep-items tr.nd-indent > td:first-of-type {
     padding-left: 1.5em !important;
   }
   .nd-rep-comment {
     flex: auto;
+  }
+  .nd-rep-footer {
+    margin-top: 0.4em;
+  }
+  .nd-rep-footer > div {
+    border-top: 1px solid {{ style.border_color }};
+    margin-top: 2.5em;
+    padding: 0.4em 0;
+    width: 50%;
+    text-align: center;
   }
   .nd-strong {
     font-weight: bold;
@@ -113,8 +128,8 @@
     <div class="row">
       <dl class="col-xs-6">
         <dt>Contact</dt>
-        <dd>{{ patient.mobile or '' }}</dd>
         <dd>{{ patient.address_line1 or '' }}</dd>
+        <dd>{{ patient.mobile or '' }}</dd>
       </dl>
       <dl class="col-xs-6">
         <dt>Invoice</dt>
@@ -200,5 +215,8 @@
     {% if doc.test_comment %}
     <div>{{ doc.test_comment }}</div>
     {% endif %}
+  </section>
+  <section class="nd-rep-footer">
+    <div><span>&#128395;</span> <span>Consultant</span></div>
   </section>
 </div>
