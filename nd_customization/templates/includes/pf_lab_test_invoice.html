@@ -202,7 +202,11 @@
     </div>
     <div>
       <span>&#9113;</span>
-      <span>{{ frappe.get_fullname() }} @ {{ frappe.utils.format_datetime(frappe.utils.now()) }}</span>
+      <span>
+        {{ frappe.get_fullname() }}
+        @
+        {{ frappe.utils.format_datetime(frappe.utils.now()) }}
+      </span>
     </div>
   </section>
 </div>
