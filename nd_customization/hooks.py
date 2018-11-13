@@ -66,6 +66,7 @@ app_include_js = '/assets/js/nd_customization.min.js'
 # include js in doctype views
 doctype_js = {
     'Patient': 'public/js/cscripts/patient.js',
+    'Lab Test': 'public/js/cscripts/lab_test.js',
     'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -123,6 +124,9 @@ doctype_js = {
 # Hook on document methods and events
 
 doc_events = {
+    'Lab Test': {
+        'before_submit': 'nd_customization.doc_events.lab_test.before_submit',
+    },
     'Sales Invoice': {
         'validate': 'nd_customization.doc_events.sales_invoice.validate',
         'on_submit': 'nd_customization.doc_events.sales_invoice.on_submit',
