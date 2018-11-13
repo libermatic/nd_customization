@@ -29,6 +29,7 @@ fixtures = [
             'Lab Test-naming_series-options',
             'Lab Test-naming_series-default',
             'Lab Test-default_print_format',
+            'Lab Test-invoice-in_standard_filter',
             'Patient-quick_entry',
         ]]],
     },
@@ -69,7 +70,9 @@ doctype_js = {
     'Lab Test': 'public/js/cscripts/lab_test.js',
     'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
 }
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {
+    'Lab Test': 'public/js/cscripts/lab_test_list.js'
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 

@@ -202,5 +202,22 @@
   "property": "default_print_format", 
   "property_type": "Data", 
   "value": "Lab Test Report"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Lab Test", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "invoice", 
+  "modified": "2018-11-13 22:36:32.341578", 
+  "name": "Lab Test-invoice-in_standard_filter", 
+  "property": "in_standard_filter", 
+  "property_type": "Check", 
+  "value": "1"
  }
 ]
