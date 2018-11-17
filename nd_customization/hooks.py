@@ -19,9 +19,15 @@ fixtures = [
         'doctype': 'Property Setter',
         'filters': [['name', 'in', [
             'Sales Invoice-project-hidden',
+            'Sales Invoice-appointment-hidden',
             'Sales Invoice-naming_series-options',
             'Sales Invoice-naming_series-default',
             'Sales Invoice-default_print_format',
+            'Sales Invoice Item-qty-in_list_view',
+            'Sales Invoice Item-amount-in_list_view',
+            'Sales Invoice Item-warehouse-in_list_view',
+            'Sales Invoice Item-batch_no-in_list_view',
+            'Sales Invoice Item-serial_no-in_list_view',
             'Purchase Invoice-naming_series-options',
             'Purchase Invoice-naming_series-default',
             'Payment Entry-naming_series-options',
@@ -43,6 +49,7 @@ fixtures = [
             'Sales Invoice-ref_physician',
             'Sales Invoice Item-reference_dt',
             'Sales Invoice Item-reference_dn',
+            'Sales Invoice Item-lab_test_result_date',
         ]]]
     },
 ]
