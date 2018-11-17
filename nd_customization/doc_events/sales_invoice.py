@@ -41,7 +41,9 @@ def on_submit(doc, method):
             else:
                 template = _get_lab_test_template(item.item_code)
                 if template:
-                    test = _make_lab_test(patient, template, doc)
+                    test = _make_lab_test(
+                        patient, template, doc, item.lab_test_result_date
+                    )
                     test.insert(ignore_permissions=True)
                     load_result_format(test, template, None, None)
                     frappe.db.set_value(
@@ -89,7 +91,7 @@ def _get_lab_test_template(item):
     return frappe.get_doc("Lab Test Template", template) if template else None
 
 
-def _make_lab_test(patient, template, invoice):
+def _make_lab_test(patient, template, invoice, result_date):
     return frappe.get_doc({
         'doctype': 'Lab Test',
         'invoice': invoice.name,
@@ -105,4 +107,5 @@ def _make_lab_test(patient, template, invoice):
         'report_preference': patient.report_preference,
         'test_name': template.test_name,
         'template': template.name,
+        'result_date': result_date,
     })
