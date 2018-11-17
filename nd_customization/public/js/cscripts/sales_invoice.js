@@ -11,9 +11,11 @@ frappe.ui.form.on('Sales Invoice', {
         'customer'
       );
       frm.set_value('customer', doc['customer']);
+      frm.set_value('is_pos', 1);
     } else {
       frm.set_value('patient_name', null);
       frm.set_value('customer', null);
+      frm.set_value('is_pos', 0);
     }
   },
 });
