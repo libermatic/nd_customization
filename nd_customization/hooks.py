@@ -50,7 +50,33 @@ fixtures = [
             'Sales Invoice Item-reference_dt',
             'Sales Invoice Item-reference_dn',
             'Sales Invoice Item-lab_test_result_date',
-        ]]]
+        ]]],
+    },
+    {
+        'doctype': 'Workflow',
+        'filters': [['name', 'in', [
+            'Lab Test Workflow',
+        ]]],
+    },
+    {
+        'doctype': 'Workflow State',
+        'filters': [['name', 'in', [
+            'Pending',
+            'Discarded',
+            'Completed',
+            'Approved',
+            'Rejected',
+            'Cancelled',
+        ]]],
+    },
+    {
+        'doctype': 'Workflow Action',
+        'filters': [['name', 'in', [
+            'Reject',
+            'Submit',
+            'Approve',
+            'Cancel',
+        ]]],
     },
 ]
 
@@ -77,9 +103,7 @@ doctype_js = {
     'Lab Test': 'public/js/cscripts/lab_test.js',
     'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
 }
-doctype_list_js = {
-    'Lab Test': 'public/js/cscripts/lab_test_list.js'
-}
+# doctype_list_js = {'doctype': 'public/js/doctype_list.js'}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
