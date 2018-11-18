@@ -36,7 +36,8 @@ fixtures = [
             'Lab Test-naming_series-default',
             'Lab Test-default_print_format',
             'Lab Test-invoice-in_standard_filter',
-            'Patient-quick_entry',
+            'Patient-dob-reqd',
+            'Patient-mobile-reqd',
         ]]],
     },
     {
