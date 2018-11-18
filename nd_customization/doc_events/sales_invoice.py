@@ -5,6 +5,8 @@ from frappe.utils import flt, fmt_money
 from erpnext.healthcare.doctype.lab_test.lab_test \
     import load_result_format
 
+from nd_customization.api.workflow import apply_workflow
+
 
 def validate(doc, method):
     if doc.additional_discount_percentage or doc.discount_amount:
@@ -32,16 +34,18 @@ def on_submit(doc, method):
         lab_tests = []
         patient = frappe.get_doc('Patient', doc.patient)
         for item in doc.items:
-            if item.reference_dt == 'Lab Test':
-                test = frappe.get_doc('Lab Test', item.reference_dn)
-                if test and not test.invoice:
-                    test.invoice = doc.name
-                    test.save(ignore_permissions=True)
-                    lab_tests.append(item.reference_dn)
+            test = frappe.get_doc('Lab Test', item.reference_dn) \
+                if item.reference_dt and item.reference_dn else None
+            if test and test.status != 'Cancelled' and not test.invoice:
+                test.invoice = doc.name
+                test.save(ignore_permissions=True)
+                lab_tests.append(item.reference_dn)
             else:
                 template = _get_lab_test_template(item.item_code)
                 if template:
-                    test = _make_lab_test(patient, template, doc)
+                    test = _make_lab_test(
+                        patient, template, doc, item.lab_test_result_date
+                    )
                     test.insert(ignore_permissions=True)
                     load_result_format(test, template, None, None)
                     frappe.db.set_value(
@@ -59,7 +63,7 @@ def on_submit(doc, method):
                     lab_tests.append(test.name)
         if lab_tests:
             frappe.msgprint(
-                'Lab Test(s) {} linked.'.format(', '.join(lab_tests))
+                'Lab Test(s) {} created.'.format(', '.join(lab_tests))
             )
         else:
             frappe.msgprint('No Lab Test created.')
@@ -72,16 +76,15 @@ def on_cancel(doc, method):
         for item in doc.items:
             if item.reference_dt == 'Lab Test' and item.reference_dn:
                 test = frappe.get_doc('Lab Test', item.reference_dn)
-                if test.docstatus < 1:
-                    test.invoice = None
-                    test.save(ignore_permissions=True)
+                if test.docstatus < 1 and test.workflow_state == 'Pending':
+                    test.flags.ignore_links = True
+                    apply_workflow(test, 'Reject')
                     lab_tests.append(item.reference_dn)
         if lab_tests:
             frappe.msgprint(
-                'Lab Test(s) {} unlinked from Sales Invoice.'.format(
-                    ', '.join(lab_tests)
-                )
+                'Lab Test(s) {} deleted.'.format(', '.join(lab_tests))
             )
+        doc.reload()
 
 
 def _get_lab_test_template(item):
@@ -89,7 +92,7 @@ def _get_lab_test_template(item):
     return frappe.get_doc("Lab Test Template", template) if template else None
 
 
-def _make_lab_test(patient, template, invoice):
+def _make_lab_test(patient, template, invoice, result_date):
     return frappe.get_doc({
         'doctype': 'Lab Test',
         'invoice': invoice.name,
@@ -105,4 +108,6 @@ def _make_lab_test(patient, template, invoice):
         'report_preference': patient.report_preference,
         'test_name': template.test_name,
         'template': template.name,
+        'result_date': result_date,
+        'workflow_state': 'Pending',
     })

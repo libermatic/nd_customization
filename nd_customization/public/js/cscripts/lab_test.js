@@ -11,7 +11,7 @@ frappe.ui.form.on('Lab Test', {
     }
   },
   render_dashboard: async function(frm) {
-    if (frm.doc.docstatus === 1 && !!frm.doc['invoice']) {
+    if (!!frm.doc['invoice']) {
       function get_color(status) {
         switch (status) {
           case 'Paid':

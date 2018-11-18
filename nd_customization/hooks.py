@@ -19,9 +19,15 @@ fixtures = [
         'doctype': 'Property Setter',
         'filters': [['name', 'in', [
             'Sales Invoice-project-hidden',
+            'Sales Invoice-appointment-hidden',
             'Sales Invoice-naming_series-options',
             'Sales Invoice-naming_series-default',
             'Sales Invoice-default_print_format',
+            'Sales Invoice Item-qty-in_list_view',
+            'Sales Invoice Item-amount-in_list_view',
+            'Sales Invoice Item-warehouse-in_list_view',
+            'Sales Invoice Item-batch_no-in_list_view',
+            'Sales Invoice Item-serial_no-in_list_view',
             'Purchase Invoice-naming_series-options',
             'Purchase Invoice-naming_series-default',
             'Payment Entry-naming_series-options',
@@ -30,7 +36,8 @@ fixtures = [
             'Lab Test-naming_series-default',
             'Lab Test-default_print_format',
             'Lab Test-invoice-in_standard_filter',
-            'Patient-quick_entry',
+            'Patient-dob-reqd',
+            'Patient-mobile-reqd',
         ]]],
     },
     {
@@ -43,7 +50,34 @@ fixtures = [
             'Sales Invoice-ref_physician',
             'Sales Invoice Item-reference_dt',
             'Sales Invoice Item-reference_dn',
-        ]]]
+            'Sales Invoice Item-lab_test_result_date',
+        ]]],
+    },
+    {
+        'doctype': 'Workflow',
+        'filters': [['name', 'in', [
+            'Lab Test Workflow',
+        ]]],
+    },
+    {
+        'doctype': 'Workflow State',
+        'filters': [['name', 'in', [
+            'Pending',
+            'Discarded',
+            'Completed',
+            'Approved',
+            'Rejected',
+            'Cancelled',
+        ]]],
+    },
+    {
+        'doctype': 'Workflow Action',
+        'filters': [['name', 'in', [
+            'Reject',
+            'Submit',
+            'Approve',
+            'Cancel',
+        ]]],
     },
 ]
 
@@ -70,9 +104,7 @@ doctype_js = {
     'Lab Test': 'public/js/cscripts/lab_test.js',
     'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
 }
-doctype_list_js = {
-    'Lab Test': 'public/js/cscripts/lab_test_list.js'
-}
+# doctype_list_js = {'doctype': 'public/js/doctype_list.js'}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -129,6 +161,7 @@ doctype_list_js = {
 doc_events = {
     'Lab Test': {
         'before_submit': 'nd_customization.doc_events.lab_test.before_submit',
+        'before_cancel': 'nd_customization.doc_events.lab_test.before_cancel',
     },
     'Sales Invoice': {
         'validate': 'nd_customization.doc_events.sales_invoice.validate',
