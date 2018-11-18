@@ -160,6 +160,7 @@ doctype_js = {
 doc_events = {
     'Lab Test': {
         'before_submit': 'nd_customization.doc_events.lab_test.before_submit',
+        'before_cancel': 'nd_customization.doc_events.lab_test.before_cancel',
     },
     'Sales Invoice': {
         'validate': 'nd_customization.doc_events.sales_invoice.validate',

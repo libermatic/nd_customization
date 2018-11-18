@@ -12,3 +12,7 @@ def before_submit(doc, method):
             doc.employee_name = frappe.db.get_value(
                 'Employee', doc.employee, 'employee_name',
             )
+
+
+def before_cancel(doc, method):
+    doc.flags.ignore_links = True
