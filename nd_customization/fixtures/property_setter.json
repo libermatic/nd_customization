@@ -10,7 +10,7 @@
   "doctype": "Property Setter", 
   "doctype_or_field": "DocField", 
   "field_name": "naming_series", 
-  "modified": "2018-11-11 16:35:01.533735", 
+  "modified": "2018-11-17 21:09:50.411656", 
   "name": "Sales Invoice-naming_series-default", 
   "property": "default", 
   "property_type": "Text", 
@@ -27,11 +27,11 @@
   "doctype": "Property Setter", 
   "doctype_or_field": "DocField", 
   "field_name": "naming_series", 
-  "modified": "2018-11-11 16:35:01.568596", 
+  "modified": "2018-11-17 21:09:50.450801", 
   "name": "Sales Invoice-naming_series-options", 
   "property": "options", 
   "property_type": "Text", 
-  "value": "SI-.YY.MM.DD.-.####\nSI-RET-.####"
+  "value": "SI-.YY.MM.DD.-.####\nSI-RET-.#####"
  }, 
  {
   "_assign": null, 
@@ -129,7 +129,7 @@
   "doctype": "Property Setter", 
   "doctype_or_field": "DocField", 
   "field_name": "naming_series", 
-  "modified": "2018-11-11 16:35:20.412313", 
+  "modified": "2018-11-17 21:10:03.228345", 
   "name": "Purchase Invoice-naming_series-default", 
   "property": "default", 
   "property_type": "Text", 
@@ -146,11 +146,11 @@
   "doctype": "Property Setter", 
   "doctype_or_field": "DocField", 
   "field_name": "naming_series", 
-  "modified": "2018-11-11 16:35:20.434648", 
+  "modified": "2018-11-17 21:10:03.254681", 
   "name": "Purchase Invoice-naming_series-options", 
   "property": "options", 
   "property_type": "Text", 
-  "value": "PI-.YY.MM.DD.-.####\nPI-RET-.####"
+  "value": "PI-.YY.MM.DD.-.####\nPI-RET-.#####"
  }, 
  {
   "_assign": null, 
@@ -218,23 +218,6 @@
   "name": "Lab Test-invoice-in_standard_filter", 
   "property": "in_standard_filter", 
   "property_type": "Check", 
-  "value": "1"
- }, 
- {
-  "_assign": null, 
-  "_comments": null, 
-  "_liked_by": null, 
-  "_user_tags": null, 
-  "default_value": null, 
-  "doc_type": "Sales Invoice", 
-  "docstatus": 0, 
-  "doctype": "Property Setter", 
-  "doctype_or_field": "DocField", 
-  "field_name": "is_pos", 
-  "modified": "2018-11-17 19:56:31.727507", 
-  "name": "Sales Invoice-is_pos-default", 
-  "property": "default", 
-  "property_type": "Text", 
   "value": "1"
  }, 
  {
