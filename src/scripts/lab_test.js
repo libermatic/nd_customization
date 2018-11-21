@@ -28,6 +28,12 @@ async function render_dashboard(frm) {
 export const lab_test = {
   refresh: function(frm) {
     render_dashboard(frm);
+    if (frm.doc.docstatus === 0 && frm.doc.workflow_state === 'Discarded') {
+      frm.fields
+        .map(({ df }) => df.fieldname)
+        .filter(field => field)
+        .forEach(field => frm.set_df_property(field, 'read_only', 1));
+    }
   },
   employee: function(frm) {
     if (!frm.doc['employee']) {

@@ -160,6 +160,7 @@ doctype_js = {
 
 doc_events = {
     'Lab Test': {
+        'validate': 'nd_customization.doc_events.lab_test.validate',
         'before_cancel': 'nd_customization.doc_events.lab_test.before_cancel',
         'on_update_after_submit':
             'nd_customization.doc_events.lab_test.on_update_after_submit',

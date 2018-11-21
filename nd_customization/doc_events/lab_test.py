@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import frappe
 from erpnext.healthcare.doctype.lab_test.lab_test import update_status
+
+
+def validate(doc, method):
+    if doc.workflow_state == 'Discarded':
+        frappe.throw('Cannot save a Discarded Lab Test. Create a new one.')
 
 
 def before_cancel(doc, method):
