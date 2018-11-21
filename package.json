@@ -9,7 +9,8 @@
     "build": "rollup -c --environment NODE_ENV:production",
     "preversion": "npm run build; git add $npm_package_main",
     "version": "sed -i \"s/__version__.*/__version__ = 'v$npm_package_version'/\" psd_customization/__init__.py && git add -A psd_customization/__init__.py",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test ava",
+    "test:watch": "npm run test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,9 @@
   },
   "homepage": "https://github.com/libermatic/nd_customization#readme",
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "ava": "^1.0.0-rc.2",
+    "esm": "^3.0.84",
     "rollup": "^0.67.3",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.2.0",
