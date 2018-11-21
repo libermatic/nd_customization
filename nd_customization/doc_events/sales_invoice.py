@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe.utils import flt, fmt_money
 from erpnext.healthcare.doctype.lab_test.lab_test \
-    import load_result_format
+    import create_sample_collection, load_result_format
 
 from nd_customization.api.workflow import apply_workflow
 
@@ -47,7 +47,8 @@ def on_submit(doc, method):
                         patient, template, doc, item.lab_test_result_date
                     )
                     test.insert(ignore_permissions=True)
-                    load_result_format(test, template, None, None)
+                    create_sample_collection(test, template, patient, doc.name)
+                    load_result_format(test, template, None, doc.name)
                     frappe.db.set_value(
                         'Sales Invoice Item',
                         item.name,
