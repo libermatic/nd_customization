@@ -87,7 +87,7 @@ fixtures = [
 # include js, css files in header of desk.html
 # app_include_css = "/assets/nd_customization/css/nd_customization.css"
 # app_include_js = "/assets/nd_customization/js/nd_customization.js"
-app_include_js = '/assets/js/nd_customization.min.js'
+app_include_js = '/assets/nd_customization/js/nd_customization.iife.js'
 
 # include js, css files in header of web template
 # web_include_css = "/assets/nd_customization/css/nd_customization.css"
