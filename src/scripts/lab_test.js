@@ -1,6 +1,8 @@
 // Copyright (c) 2018, Libermatic and contributors
 // For license information, please see license.txt
 
+import { omit } from '../utils';
+
 async function render_dashboard(frm) {
   if (!!frm.doc['invoice']) {
     function get_color(status) {
@@ -25,9 +27,26 @@ async function render_dashboard(frm) {
   }
 }
 
+function add_menus_items(frm) {
+  if (['Discarded', 'Rejected'].includes(frm.doc.workflow_state)) {
+    frm.page.add_menu_item('Clone Test', async function() {
+      const { doc } = frm;
+      const cloned = frappe.model.copy_doc(
+        omit(
+          ['email_sent', 'patient_age', 'printed', 'sms_sent', 'status'],
+          doc
+        ),
+        doc.name
+      );
+      frappe.set_route('Form', cloned.doctype, cloned.name);
+    });
+  }
+}
+
 export const lab_test = {
   refresh: function(frm) {
     render_dashboard(frm);
+    add_menus_items(frm);
     if (frm.doc.docstatus === 0 && frm.doc.workflow_state === 'Discarded') {
       frm.fields
         .map(({ df }) => df.fieldname)
