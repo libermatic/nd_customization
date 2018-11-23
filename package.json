@@ -1,0 +1,35 @@
+{
+  "name": "nd_customization",
+  "version": "0.0.6",
+  "description": "Customization for ND",
+  "entry": "src/index.js",
+  "main": "nd_customization/public/js/nd_customization.iife.js",
+  "scripts": {
+    "watch": "rollup -c --watch",
+    "build": "rollup -c --environment NODE_ENV:production",
+    "preversion": "npm run build; git add $npm_package_main",
+    "version": "sed -i \"s/__version__.*/__version__ = 'v$npm_package_version'/\" $npm_package_name/__init__.py; git add -A $npm_package_name/__init__.py",
+    "test": "NODE_ENV=test ava",
+    "test:watch": "npm run test -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/libermatic/nd_customization.git"
+  },
+  "author": "Sun Howwrongbum <sun@libermatic.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/libermatic/nd_customization/issues"
+  },
+  "homepage": "https://github.com/libermatic/nd_customization#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "ava": "^1.0.0-rc.2",
+    "esm": "^3.0.84",
+    "rollup": "^0.67.3",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-replace": "^2.1.0"
+  }
+}

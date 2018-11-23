@@ -4,3 +4,5 @@
 *.swp
 tags
 nd_customization/docs/current
+.ropeproject
+node_modules/

@@ -1,35 +1,73 @@
+{% set ack_height = '6em' %}
+
 <style>
   @media screen {
     .print-format {
-      {% if no_letterhead %}
-      padding: 10mm;
-      {% else %}
-      padding: calc({{ header_height or '0mm' }} + 10mm) 10mm
-        calc({{ footer_height or '0mm' }} + 10mm);
-      {% endif %}
+      padding: {{ page_margin or '10mm' }};
     }
   }
+  /* frappe pdf hack won't work with headers and footers tho */
   @media print {
-    {% if not no_letterhead %}
     .print-format {
-      padding: {{ header_height or '0mm' }} 0 {{ footer_height or '0mm' }};
+      margin-left: {{ page_margin or '10mm' }}mm;
+      margin-right: {{ page_margin or '10mm' }}mm;
     }
-    {% endif %}
   }
-  .nd-rep {
-    display: flex;
-    flex-flow: column nowrap;
-    min-height: calc(297mm - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * 10mm);
+  @page {
+    size: A4;
+    margin: {{ page_margin  }};
   }
-  .nd-status-indicator .badge {
+
+  table.nd-page-layout {
+    width: 100%;
+  }
+  table.nd-page-layout > thead > tr > td,
+  table.nd-page-layout > tbody > tr > td,
+  table.nd-page-layout > tfoot > tr > td {
+    padding: 0 !important;
+  }
+  table.nd-page-layout > thead {
+    display: table-header-group;
+  }
+  table.nd-page-layout > tfoot {
+    display: table-footer-group;
+  }
+  table.nd-page-layout > tbody > tr {
+    height: calc({{ page_height or '297mm' }} - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * {{ page_margin or '10mm' }});
+  }
+  table.nd-page-layout > tbody > tr > td {
+    position: relative;
+    padding-bottom: {{ ack_height }} !important;
+  }
+  table.nd-page-layout > thead > tr {
+    height: {{ header_height or '0mm' }};
+  }
+  table.nd-page-layout > tfoot > tr {
+    height: {{ footer_height or '0mm' }};
+  }
+  table.nd-page-layout > tfoot > tr > td {
+    vertical-align: bottom !important;
+    position: relative;
+  }
+  table.nd-page-layout > tfoot > tr > td > div {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+  }
+
+  .nd-docstatus {
+    margin: 1em 0;
+  }
+  .nd-docstatus .badge {
     font-variant: all-small-caps;
     background-color: #36414c;
     color: #fff;
   }
+
   .nd-rep-details {
     border-top: 1px solid {{ style.border_color }};
-    margin: 0.8em 0;
-    padding-top: 0.4em;
+    border-bottom: 1px solid {{ style.border_color }};
+    padding: 0.4em 0;
     line-height: 1.6;
   }
   .nd-rep-details dl {
@@ -39,18 +77,22 @@
     display: inline;
     font-weight: normal;
   }
+  .nd-rep-details dt {
+    min-width: 5em;
+  }
   .nd-rep-details dt:after {
     content: ':';
     margin: 0 0.5em;
   }
+
   .nd-rep-title {
-    border-top: 1px solid {{ style.border_color }};
-    padding: 0.3em 0 0.6em;
+    padding: 0.6em 0;
   }
   .nd-rep-title > h1 {
     font-size: 1.3em;
     margin: 0;
   }
+
   .nd-rep-items > table, .nd-rep-items > div {
     margin: 0.8em 0;
     width: 100%;
@@ -63,160 +105,199 @@
   }
   .nd-rep-items > table th, .nd-rep-items > table td {
     padding: 2pt !important;
+    line-height: 1.4;
   }
   .nd-rep-items tr.nd-separate > td {
+    font-weight: bold;
     border-top: 1px solid {{ style.border_color }};
   }
   .nd-rep-items tr.nd-indent > td:first-of-type {
     padding-left: 1.5em !important;
   }
-  .nd-rep-comment {
-    flex: auto;
-  }
-  .nd-rep-footer {
-    margin-top: 0.4em;
-  }
-  .nd-rep-footer > div {
-    border-top: 1px solid {{ style.border_color }};
-    margin-top: 2.5em;
-    padding: 0.4em 0;
+
+  .nd-rep-comment {}
+
+  .nd-rep-ack {
+    position: absolute;
+    bottom: 0;
+    height: {{ ack_height }};
     width: 50%;
+  }
+  .nd-rep-ack > div {
+    position: absolute;
+    bottom: 0;
+    padding: 0.5em 0;
+    width: 100%;
     text-align: center;
   }
+
   .nd-strong {
     font-weight: bold;
   }
+  .nd-mono {
+    font-family: mono;
+  }
 </style>
 
-<div class="nd-rep">
-  {% if not no_letterhead and letter_head %}
-  {{ letter_head }}
-  {% endif %}
-  {% if doc.docstatus != 1 %}
-  <section class="nd-status-indicator text-right">
-    <div class="badge">{{ doc.status }}</div>
-  </section>
-  {% elif frappe.db.get_value(
-    'Healthcare Settings', None, 'require_test_result_approval'
-    ) == 1 and doc.approval_status != 'Approved' %}
-  <section class="nd-status-indicator text-right">
-    <div class="badge">Pending Approval</div>
-  </section>
-  {% endif %}
-  <section class="nd-rep-details">
-    {% set patient = frappe.get_doc('Patient', doc.patient) %}
-    <div class="row">
-      <dl class="col-xs-6">
-        <dt>Name</dt>
-        <dd><span class="nd-strong">{{ doc.patient_name }}</span> ({{ doc.patient }})</dd>
-      </dl>
-      <dl class="col-xs-6">
-        <dt>Referred By</dt>
-        <dd>{{ doc.physician or '' }}</dd>
-      </dl>
-    </div>
-    <div class="row">
-      <dl class="col-xs-6">
-        <dt>Bio</dt>
-        <dd>{{doc.patient_age }} / {{ doc.patient_sex }}</dd>
-      </dl>
-      <dl class="col-xs-6">
-        <dt>Test ID</dt>
-        <dd><span class="nd-strong">{{ doc.name }}</span></dd>
-      </dl>
-    </div>
-    <div class="row">
-      <dl class="col-xs-6">
-        <dt>Contact</dt>
-        <dd>{{ patient.address_line1 or '' }}</dd>
-        <dd>{{ patient.mobile or '' }}</dd>
-      </dl>
-      <dl class="col-xs-6">
-        <dt>Invoice</dt>
-        <dd>{{ doc.invoice }}</dd>
-      </dl>
-    </div>
-  </section>
-  <section class="nd-rep-title">
-    <h1>Department of {{ doc.department }}</h1>
-  </section>
-  <section class="nd-rep-items">
-    {% if doc.normal_test_items %}
-    <table>
-      <caption>{{ doc.test_name }}</caption>
-      <thead>
-        <tr>
-          <th>Test</th>
-          <th class="text-right">Result</th>
-          <th>Units</th>
-          <th>Biological Reference</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in doc.normal_test_items %}
-        {% set will_separate = loop.index0 > 0 and not item.normal_range and
-          not item.test_uom and not item.result_value and not item.test_event
-          and item.test_name %}
-        {% set will_indent = not item.test_name and item.test_event %}
-        <tr class="{{ 'nd-separate' if will_separate else '' -}}
-          {{- 'nd-indent' if will_indent else ''  }}">
-          <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
-          <td class="text-right">{{ item.result_value or '' }}</td>
-          <td>{{ item.test_uom or '' }}</td>
-          <td>{{ item.normal_range or '' }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-    {% if doc.special_test_items %}
-    <table>
-      <caption>{{ doc.test_name }}</caption>
-      <thead>
-        <tr>
-          <th>Test</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in doc.special_test_items %}
-        <tr>
-          <td>{{ item.test_particulars }}</td>
-          <td>{{ item.result_value }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-    {% if doc.sensitivity_test_items %}
-    <table>
-      <caption>{{ doc.test_name }}</caption>
-      <thead>
-        <tr>
-          <th>Test</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in doc.sensitivity_test_items %}
-        <tr>
-          <td>{{ item.antibiotic }}</td>
-          <td>{{ item.antibiotic_sensitivity }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-    {% if doc.custom_result %}
-    <div>{{ doc.custom_result }}</div>
-    {% endif %}
-  </section>
-  <section class="nd-rep-comment">
-    {% if doc.test_comment %}
-    <div>{{ doc.test_comment }}</div>
-    {% endif %}
-  </section>
-  <section class="nd-rep-footer">
-    <div><span>&#128395;</span> <span>Consultant</span></div>
-  </section>
-</div>
+{% set page_header, page_footer = frappe.db.get_value(
+  'Letter Head', nd_letter_head, ['content', 'footer']
+  ) if nd_letter_head else ('', '')
+%}
+
+<table class="nd-page-layout">
+  <thead class="hidden-pdf">
+    <tr>
+      <td>
+        <div id="header-html">
+          {{ page_header if not no_letterhead else '' }}
+        </div>
+      </td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        {% if doc.status != 'Approved' %}
+        <section class="nd-docstatus">
+          <span class="badge">
+            {{ 'Pending Approval' if doc.status == 'Completed' else doc.status }}
+          </span>
+        </section>
+        {% endif %}
+
+        <section class="nd-rep-details">
+          {% set patient = frappe.get_doc('Patient', doc.patient) %}
+          <div class="row">
+            <dl class="col-xs-6">
+              <dt>Name</dt>
+              <dd>
+                <span class="nd-strong">{{ doc.patient_name }}</span>
+                (<span class="nd-mono">{{ doc.patient }}</span>)
+              </dd>
+            </dl>
+            <dl class="col-xs-6">
+              <dt>Referred By</dt>
+              <dd>{{ doc.physician or '' }}</dd>
+            </dl>
+          </div>
+          <div class="row">
+            <dl class="col-xs-6">
+              <dt>Bio</dt>
+              <dd>{{ doc.patient_age|replace(' year(s)', 'Y')|replace(' month(s)', 'M')|replace(' day(s)', 'D') or '?' }} / {{ doc.patient_sex }}</dd>
+            </dl>
+            <dl class="col-xs-6">
+              <dt>Test ID</dt>
+              <dd><span class="nd-strong">{{ doc.name }}</span></dd>
+            </dl>
+          </div>
+          <div class="row">
+            <dl class="col-xs-6">
+              <dt>Contact</dt>
+              <dd>{{ patient.address_line1 or '' }}</dd>
+              <dd>{{ patient.mobile or '' }}</dd>
+            </dl>
+            <dl class="col-xs-6">
+              <dt>Invoice</dt>
+              <dd class="nd-mono nd-mono">{{ doc.invoice }}</dd>
+            </dl>
+          </div>
+        </section>
+
+        <section class="nd-rep-title">
+          <h1>Department of {{ doc.department }}</h1>
+        </section>
+
+          <section class="nd-rep-items">
+            {% if doc.normal_test_items %}
+            <table>
+              <caption>{{ doc.test_name }}</caption>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th class="text-right">Result</th>
+                  <th>Units</th>
+                  <th>Biological Reference</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in doc.normal_test_items %}
+                {% set will_separate = loop.index0 > 0 and not item.normal_range and
+                  not item.test_uom and not item.result_value and not item.test_event
+                  and item.test_name %}
+                  {% set will_indent = not item.test_name and item.test_event %}
+                  <tr class="{{ 'nd-separate' if will_separate else '' -}}
+                  {{- 'nd-indent' if will_indent else ''  }}">
+                  <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
+                  <td class="text-right">{{ item.result_value or '' }}</td>
+                  <td>{{ item.test_uom or '' }}</td>
+                  <td>{{ item.normal_range or '' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+            {% if doc.special_test_items %}
+            <table>
+              <caption>{{ doc.test_name }}</caption>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in doc.special_test_items %}
+                <tr>
+                  <td>{{ item.test_particulars }}</td>
+                  <td>{{ item.result_value }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+            {% if doc.sensitivity_test_items %}
+            <table>
+              <caption>{{ doc.test_name }}</caption>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in doc.sensitivity_test_items %}
+                <tr>
+                  <td>{{ item.antibiotic }}</td>
+                  <td>{{ item.antibiotic_sensitivity }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+            {% if doc.custom_result %}
+            <div>{{ doc.custom_result }}</div>
+            {% endif %}
+          </section>
+
+          {% if doc.test_comment %}
+          <section class="nd-rep-comment">
+            <div>{{ doc.test_comment }}</div>
+          </section>
+          {% endif %}
+
+          <section class="nd-rep-ack">
+            <div>+ Consultant</div>
+          </section>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot class="hidden-pdf">
+    <tr>
+      <td>
+        <div id="footer-html">
+          {{ page_footer if not no_letterhead else '' }}
+        </div>
+      </td>
+    </tr>
+  </tfoot>
+</table>

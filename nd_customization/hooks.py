@@ -32,12 +32,16 @@ fixtures = [
             'Purchase Invoice-naming_series-default',
             'Payment Entry-naming_series-options',
             'Payment Entry-naming_series-default',
+            'Sample Collection-naming_series-options',
+            'Sample Collection-naming_series-default',
             'Lab Test-naming_series-options',
             'Lab Test-naming_series-default',
             'Lab Test-default_print_format',
             'Lab Test-invoice-in_standard_filter',
+            'Lab Test-sample-in_standard_filter',
             'Patient-dob-reqd',
             'Patient-mobile-reqd',
+            'Healthcare Settings-require_test_result_approval-hidden',
         ]]],
     },
     {
@@ -87,7 +91,7 @@ fixtures = [
 # include js, css files in header of desk.html
 # app_include_css = "/assets/nd_customization/css/nd_customization.css"
 # app_include_js = "/assets/nd_customization/js/nd_customization.js"
-app_include_js = '/assets/js/nd_customization.min.js'
+app_include_js = '/assets/nd_customization/js/nd_customization.iife.js'
 
 # include js, css files in header of web template
 # web_include_css = "/assets/nd_customization/css/nd_customization.css"
@@ -160,8 +164,10 @@ doctype_js = {
 
 doc_events = {
     'Lab Test': {
-        'before_submit': 'nd_customization.doc_events.lab_test.before_submit',
+        'validate': 'nd_customization.doc_events.lab_test.validate',
         'before_cancel': 'nd_customization.doc_events.lab_test.before_cancel',
+        'on_update_after_submit':
+            'nd_customization.doc_events.lab_test.on_update_after_submit',
     },
     'Sales Invoice': {
         'validate': 'nd_customization.doc_events.sales_invoice.validate',

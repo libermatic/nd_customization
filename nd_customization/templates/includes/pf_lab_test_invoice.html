@@ -1,8 +1,6 @@
 <style>
   @media screen {
     .print-format {
-      height: {{ '148mm' if is_landscape else '210mm' }};
-      width: {{ '210mm' if is_landscape else '148mm' }};
       min-height: {{ '148mm' if is_landscape else '210mm' }};
       max-width: {{ '210mm' if is_landscape else '148mm' }};
       padding: 10mm;
@@ -18,9 +16,13 @@
   }
   .nd-inv-head {
     text-transform: uppercase;
-    border-top: 1px solid {{ style.border_color }};
     padding: 0.4em 0;
     text-align: center;
+  }
+  .nd-inv-head h1 {
+    border-bottom: 1px solid {{ style.border_color }};
+    margin: 0;
+    font-size: 1.2em;
   }
   .nd-inv-head > div {
     display: inline;
@@ -68,15 +70,24 @@
   .nd-inv-items > table > tfoot > tr:first-of-type > td {
     border-top: 1px solid {{ style.border_color }};
   }
+
   .nd-inv-footer {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-end;
+  }
+  .nd-inv-footer > div {
+    flex: auto;
+  }
+  .nd-ack {
     display: flex;
     flex-flow: column nowrap;
     align-items: flex-end;
     margin-top: 0.4em;
   }
-  .nd-inv-footer > div {
+  .nd-ack > div {
     text-align: center;
-    width: 50%;
+    width: 100%;
     padding: 2pt;
   }
   .nd-strong {
@@ -86,6 +97,9 @@
     font-style: italic;
     border-bottom: 1px solid {{ style.border_color }};
   }
+  .nd-mono {
+    font-family: mono;
+  }
 </style>
 
 <div class="nd-inv">
@@ -94,11 +108,11 @@
   {% endif %}
 
   <section class="nd-inv-head">
+    <h1>Sales Invoice</h1>
     {% if doc.docstatus != 1 %}
-    <span class="badge">{{ doc.status }}</span>
+    <div class="badge">{{ doc.status }}</div>
     {% endif %}
-    <div>Sales Invoice</div>
-    <div class="nd-strong">{{ doc.name }}</div>
+    <div class="nd-strong nd-mono">{{ doc.name }}</div>
     <div>{{ doc.get_formatted('posting_date') }}</div>
     <div>{{ doc.get_formatted('posting_time') }}</div>
   </section>
@@ -109,11 +123,11 @@
     <div class="row">
       <dl class="col-xs-6">
         <dt>Name</dt>
-        <dd>{{ doc.patient_name }} (<span class="nd-strong">{{ doc.patient }}</span>)</dd>
+        <dd>{{ doc.patient_name }} (<span class="nd-strong nd-mono">{{ doc.patient }}</span>)</dd>
       </dl>
       <dl class="col-xs-6">
         <dt>Bio</dt>
-        <dd>{{ patient.get_age() }} / {{ patient.sex }}</dd>
+        <dd>{{ patient.get_age()|replace(' year(s)', 'Y')|replace(' month(s)', 'M')|replace(' day(s)', 'D') or '?' }} / {{ patient.sex }}</dd>
       </dl>
     </div>
     <div class="row">
@@ -197,16 +211,21 @@
     </table>
   </section>
   <section class="nd-inv-footer">
-    <div class="nd-empasize">
-      Received
-    </div>
     <div>
-      <span>&#9113;</span>
-      <span>
-        {{ frappe.get_fullname() }}
-        @
-        {{ frappe.utils.format_datetime(frappe.utils.now()) }}
-      </span>
+      {{ doc.terms }}
+    </div>
+    <div class="nd-ack">
+      <div class="nd-empasize">
+        Received
+      </div>
+      <div>
+        <span>&#9113;</span>
+        <span>
+          {{ frappe.get_fullname() }}
+          @
+          {{ frappe.utils.format_datetime(frappe.utils.now()) }}
+        </span>
+      </div>
     </div>
   </section>
 </div>

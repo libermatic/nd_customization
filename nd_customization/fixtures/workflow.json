@@ -4,7 +4,7 @@
   "doctype": "Workflow", 
   "document_type": "Lab Test", 
   "is_active": 1, 
-  "modified": "2018-11-18 00:30:28.505826", 
+  "modified": "2018-11-21 19:26:05.021823", 
   "name": "Lab Test Workflow", 
   "override_status": 0, 
   "states": [
@@ -21,8 +21,8 @@
     "doc_status": "0", 
     "message": null, 
     "state": "Discarded", 
-    "update_field": "status", 
-    "update_value": "Cancelled"
+    "update_field": "", 
+    "update_value": ""
    }, 
    {
     "allow_edit": "Laboratory User", 
@@ -37,19 +37,19 @@
     "doc_status": "1", 
     "message": null, 
     "state": "Approved", 
-    "update_field": "status", 
-    "update_value": "Approved"
+    "update_field": "", 
+    "update_value": ""
    }, 
    {
     "allow_edit": "LabTest Approver", 
     "doc_status": "1", 
     "message": null, 
     "state": "Rejected", 
-    "update_field": "status", 
-    "update_value": "Rejected"
+    "update_field": "", 
+    "update_value": ""
    }, 
    {
-    "allow_edit": "Laboratory User", 
+    "allow_edit": "Healthcare Administrator", 
     "doc_status": "2", 
     "message": null, 
     "state": "Cancelled", 
