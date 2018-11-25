@@ -115,7 +115,22 @@
     padding-left: 1.5em !important;
   }
 
-  .nd-rep-comment {}
+  .nd-rep-custom {
+    padding: 0.4em 0;
+  }
+
+  .nd-rep-comment {
+    padding: 0.4em 0;
+  }
+  .nd-rep-comment > h3 {
+    font-size: 1em;
+    margin: 0 0 0.3em;
+    padding-bottom: 0.1em;
+    border-bottom: 1px solid {{ style.border_color }};
+  }
+  .nd-rep-comment > p {
+    font-size: 0.9em;
+  }
 
   .nd-rep-ack {
     position: absolute;
@@ -274,14 +289,18 @@
               </tbody>
             </table>
             {% endif %}
-            {% if doc.custom_result %}
-            <div>{{ doc.custom_result }}</div>
-            {% endif %}
           </section>
+
+          {% if doc.custom_result %}
+          <section class="nd-rep-custom">
+            <div>{{ doc.custom_result }}</div>
+          </section>
+          {% endif %}
 
           {% if doc.test_comment %}
           <section class="nd-rep-comment">
-            <div>{{ doc.test_comment }}</div>
+            <h3>Comments</h3>
+            <p>{{ doc.test_comment }}</p>
           </section>
           {% endif %}
 

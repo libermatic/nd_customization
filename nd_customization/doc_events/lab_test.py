@@ -9,6 +9,16 @@ def validate(doc, method):
         frappe.throw('Cannot save a Discarded Lab Test. Create a new one.')
 
 
+def after_insert(doc, method):
+    if doc.template and not doc.test_comment:
+        template = frappe.get_doc('Lab Test Template', doc.template)
+        if template and template.test_name != template.test_description:
+            frappe.db.set_value(
+                'Lab Test', doc.name, 'test_comment', template.test_description
+            )
+            doc.reload()
+
+
 def before_cancel(doc, method):
     doc.flags.ignore_links = True
 
