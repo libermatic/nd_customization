@@ -345,23 +345,6 @@
   "_liked_by": null, 
   "_user_tags": null, 
   "default_value": null, 
-  "doc_type": "Lab Test", 
-  "docstatus": 0, 
-  "doctype": "Property Setter", 
-  "doctype_or_field": "DocField", 
-  "field_name": "sample", 
-  "modified": "2018-11-22 02:04:49.547659", 
-  "name": "Lab Test-sample-in_standard_filter", 
-  "property": "in_standard_filter", 
-  "property_type": "Check", 
-  "value": "1"
- }, 
- {
-  "_assign": null, 
-  "_comments": null, 
-  "_liked_by": null, 
-  "_user_tags": null, 
-  "default_value": null, 
   "doc_type": "Sample Collection", 
   "docstatus": 0, 
   "doctype": "Property Setter", 
@@ -389,5 +372,22 @@
   "property": "options", 
   "property_type": "Text", 
   "value": "SC-.YY.######"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Lab Test", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "sample", 
+  "modified": "2018-11-22 02:52:55.115395", 
+  "name": "Lab Test-sample-in_standard_filter", 
+  "property": "in_standard_filter", 
+  "property_type": "Check", 
+  "value": "1"
  }
 ]

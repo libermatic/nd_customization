@@ -55,6 +55,8 @@ fixtures = [
             'Sales Invoice Item-reference_dt',
             'Sales Invoice Item-reference_dn',
             'Sales Invoice Item-lab_test_result_date',
+            'Lab Test Template-naming_series',
+            'Healthcare Settings-templates_use_naming_series',
         ]]],
     },
     {
@@ -105,6 +107,7 @@ app_include_js = '/assets/nd_customization/js/nd_customization.iife.js'
 # include js in doctype views
 doctype_js = {
     'Patient': 'public/js/cscripts/patient.js',
+    'Lab Test Template': 'public/js/cscripts/lab_test_template.js',
     'Lab Test': 'public/js/cscripts/lab_test.js',
     'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
 }
@@ -163,6 +166,9 @@ doctype_js = {
 # Hook on document methods and events
 
 doc_events = {
+    'Lab Test Template': {
+        'autoname': 'nd_customization.doc_events.lab_test_template.autoname',
+    },
     'Lab Test': {
         'validate': 'nd_customization.doc_events.lab_test.validate',
         'before_cancel': 'nd_customization.doc_events.lab_test.before_cancel',
