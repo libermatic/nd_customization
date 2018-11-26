@@ -5,8 +5,10 @@ from erpnext.healthcare.doctype.lab_test.lab_test import update_status
 
 
 def validate(doc, method):
-    if doc.workflow_state == 'Discarded':
-        frappe.throw('Cannot save a Discarded Lab Test. Create a new one.')
+    if not doc.is_new():
+        before = doc.get_doc_before_save()
+        if before.workflow_state == 'Discarded':
+            frappe.throw('Cannot save a Discarded Lab Test. Create a new one.')
 
 
 def after_insert(doc, method):
@@ -28,3 +30,4 @@ def before_cancel(doc, method):
 def on_update_after_submit(doc, method):
     if doc.workflow_state in ['Approved', 'Rejected']:
         update_status(doc.workflow_state, doc.name)
+        doc.reload()

@@ -113,6 +113,9 @@ var nd_customization = (function () {
       if (!frm.doc['employee']) {
         frm.set_value('employee_name', null);
       }
+    },
+    on_submit: function (frm) {
+      frm.reload_doc();
     }
   };
 
