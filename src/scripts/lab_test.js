@@ -59,6 +59,9 @@ export const lab_test = {
       frm.set_value('employee_name', null);
     }
   },
+  on_submit: function(frm) {
+    frm.reload_doc();
+  },
 };
 
 export default { lab_test };

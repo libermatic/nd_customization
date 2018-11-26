@@ -30,3 +30,4 @@ def before_cancel(doc, method):
 def on_update_after_submit(doc, method):
     if doc.workflow_state in ['Approved', 'Rejected']:
         update_status(doc.workflow_state, doc.name)
+        doc.reload()
