@@ -297,6 +297,17 @@
           </section>
           {% endif %}
 
+          {% if doc.sample and frappe.utils.cint(doc.sample_in_print) %}
+          <section class="nd-rep-comment">
+            {% set sample = frappe.get_doc('Sample Collection', doc.sample) %}
+            <h3>Sample</h3>
+            <p>{{ sample.sample }} – {{ sample.get_formatted('sample_quantity') }} {{ sample.sample_uom }}</p>
+            {% if sample.sample_collection_details %}
+            <p>{{ sample.sample_collection_details }}</p>
+            {% endif %}
+          </section>
+          {% endif %}
+
           {% if doc.test_comment %}
           <section class="nd-rep-comment">
             <h3>Comments</h3>
