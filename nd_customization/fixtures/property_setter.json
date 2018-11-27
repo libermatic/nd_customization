@@ -389,5 +389,39 @@
   "property": "in_standard_filter", 
   "property_type": "Check", 
   "value": "1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Lab Test Template", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "section_break_description", 
+  "modified": "2018-11-27 20:06:53.326837", 
+  "name": "Lab Test Template-section_break_description-label", 
+  "property": "label", 
+  "property_type": "Data", 
+  "value": "More Info"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Lab Test Template", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "section_break_description", 
+  "modified": "2018-11-27 20:07:53.743968", 
+  "name": "Lab Test Template-section_break_description-collapsible", 
+  "property": "collapsible", 
+  "property_type": "Check", 
+  "value": "1"
  }
 ]
