@@ -245,7 +245,7 @@
                   <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
                   <td class="text-right">{{ item.result_value or '' }}</td>
                   <td>{{ item.test_uom or '' }}</td>
-                  <td>{{ item.normal_range or '' }}</td>
+                  <td>{{ item.normal_range|replace('\n', '<br />') if item.normal_range else '' }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
