@@ -198,7 +198,7 @@
           <div class="row">
             <dl class="col-xs-6">
               <dt>Bio</dt>
-              <dd>{{ doc.patient_age|replace(' year(s)', 'Y')|replace(' month(s)', 'M')|replace(' day(s)', 'D') or '?' }} / {{ doc.patient_sex }}</dd>
+              <dd>{{ doc.patient_age|lower|replace(' year(s)', 'Y')|replace(' month(s)', 'M')|replace(' day(s)', 'D') or '?' }} / {{ doc.patient_sex }}</dd>
             </dl>
             <dl class="col-xs-6">
               <dt>Test ID</dt>
@@ -294,6 +294,17 @@
           {% if doc.custom_result %}
           <section class="nd-rep-custom">
             <div>{{ doc.custom_result }}</div>
+          </section>
+          {% endif %}
+
+          {% if doc.sample and frappe.utils.cint(doc.sample_in_print) %}
+          <section class="nd-rep-comment">
+            {% set sample = frappe.get_doc('Sample Collection', doc.sample) %}
+            <h3>Sample</h3>
+            <p>{{ sample.sample }} – {{ sample.get_formatted('sample_quantity') }} {{ sample.sample_uom }}</p>
+            {% if sample.sample_collection_details %}
+            <p>{{ sample.sample_collection_details }}</p>
+            {% endif %}
           </section>
           {% endif %}
 
