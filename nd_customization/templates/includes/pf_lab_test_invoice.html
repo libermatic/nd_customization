@@ -127,7 +127,7 @@
       </dl>
       <dl class="col-xs-6">
         <dt>Bio</dt>
-        <dd>{{ patient.get_age()|replace(' year(s)', 'Y')|replace(' month(s)', 'M')|replace(' day(s)', 'D') or '?' }} / {{ patient.sex }}</dd>
+        <dd>{{ patient.get_age()|lower|replace(' year(s)', 'Y')|replace(' month(s)', 'M')|replace(' day(s)', 'D') or '?' }} / {{ patient.sex }}</dd>
       </dl>
     </div>
     <div class="row">
