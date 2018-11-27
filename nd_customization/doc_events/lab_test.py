@@ -12,13 +12,30 @@ def validate(doc, method):
 
 
 def after_insert(doc, method):
-    if doc.template and not doc.test_comment:
+    if doc.template:
         template = frappe.get_doc('Lab Test Template', doc.template)
-        if template and template.test_name != template.test_description:
+        if template and not doc.test_comment and template.test_comment:
             frappe.db.set_value(
-                'Lab Test', doc.name, 'test_comment', template.test_description
+                'Lab Test',
+                doc.name,
+                'test_comment',
+                template.test_comment,
             )
-            doc.reload()
+        if template and not doc.custom_result and template.test_custom_result:
+            frappe.db.set_value(
+                'Lab Test',
+                doc.name,
+                'custom_result',
+                template.test_custom_result,
+            )
+        if template and doc.sample and template.sample_in_print:
+            frappe.db.set_value(
+                'Lab Test',
+                doc.name,
+                'sample_in_print',
+                template.sample_in_print,
+            )
+        doc.reload()
 
 
 def before_cancel(doc, method):

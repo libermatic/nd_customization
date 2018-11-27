@@ -61,6 +61,7 @@ fixtures = [
             'Lab Test Template-test_comment',
             'Lab Test Template-test_custom_result',
             'Lab Test Template-sample_in_print',
+            'Lab Test-sample_in_print',
             'Healthcare Settings-templates_use_naming_series',
         ]]],
     },
