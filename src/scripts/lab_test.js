@@ -108,4 +108,27 @@ export const lab_test = {
   },
 };
 
-export default { lab_test };
+export const lab_test_list = {
+  has_indicator_for_draft: true,
+  add_fields: ['docstatus', 'workflow_state', 'delivery_time'],
+  get_indicator: function({ docstatus, workflow_state, delivery_time }) {
+    if (
+      docstatus === 1 &&
+      workflow_state === 'Completed' &&
+      moment().isAfter(delivery_time)
+    ) {
+      return [
+        'Delivered',
+        'black',
+        `workflow_state,=,Completed|delivery_time,<,${frappe.datetime.now_datetime()}`,
+      ];
+    }
+    return [
+      workflow_state,
+      get_color(workflow_state),
+      `workflow_state,=,${workflow_state}`,
+    ];
+  },
+};
+
+export default { lab_test, lab_test_list };
