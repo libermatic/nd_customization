@@ -3,26 +3,45 @@
 
 import { omit } from '../utils';
 
+function get_color(status) {
+  if (status === 'Pending') {
+    return 'blue';
+  }
+  if (['Unpaid', 'Completed', 'Not Collected'].includes(status)) {
+    return 'orange';
+  }
+  if (['Paid', 'Collected', 'Approved'].includes(status)) {
+    return 'green';
+  }
+  if (['Overdue', 'Rejected'].includes(status)) {
+    return 'red';
+  }
+  return 'darkgrey';
+}
+
 async function render_dashboard(frm) {
+  const dashboard_indicators = [];
   if (!!frm.doc['invoice']) {
-    function get_color(status) {
-      switch (status) {
-        case 'Paid':
-          return 'green';
-        case 'Overdue':
-          return 'red';
-        case 'Unpaid':
-          return 'orange';
-        default:
-          return 'darkgrey';
-      }
-    }
     const { message: si } = await frappe.db.get_value(
       'Sales Invoice',
       frm.doc['invoice'],
       'status'
     );
-    frm.dashboard.add_indicator(`Invoice - ${si.status}`, get_color(si.status));
+    dashboard_indicators.push([`Invoice - ${si.status}`, get_color(si.status)]);
+  }
+  if (!!frm.doc['sample']) {
+    const { message: sc } = await frappe.db.get_value(
+      'Sample Collection',
+      frm.doc['sample'],
+      'docstatus'
+    );
+    const status = sc.docstatus ? 'Collected' : 'Not Collected';
+    dashboard_indicators.push([`Sample - ${status}`, get_color(status)]);
+  }
+  if (dashboard_indicators.length > 0) {
+    dashboard_indicators.forEach(([label, color]) =>
+      frm.dashboard.add_indicator(label, color)
+    );
     frm.dashboard.show();
   }
 }
