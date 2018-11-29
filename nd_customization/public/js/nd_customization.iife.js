@@ -70,33 +70,51 @@ var nd_customization = (function () {
 
   // Copyright (c) 2018, Libermatic and contributors
 
+  function get_color(status) {
+    if (status === 'Pending') {
+      return 'blue';
+    }
+
+    if (['Unpaid', 'Completed', 'Not Collected'].includes(status)) {
+      return 'orange';
+    }
+
+    if (['Paid', 'Collected', 'Approved'].includes(status)) {
+      return 'green';
+    }
+
+    if (['Overdue', 'Rejected'].includes(status)) {
+      return 'red';
+    }
+
+    return 'darkgrey';
+  }
+
   async function render_dashboard(frm) {
+    const dashboard_indicators = [];
+
     if (!!frm.doc['invoice']) {
-      function get_color(status) {
-        switch (status) {
-          case 'Paid':
-            return 'green';
-
-          case 'Overdue':
-            return 'red';
-
-          case 'Unpaid':
-            return 'orange';
-
-          default:
-            return 'darkgrey';
-        }
-      }
-
       const {
         message: si
       } = await frappe.db.get_value('Sales Invoice', frm.doc['invoice'], 'status');
-      frm.dashboard.add_indicator(`Invoice - ${si.status}`, get_color(si.status));
+      dashboard_indicators.push([`Invoice - ${si.status}`, get_color(si.status)]);
+    }
+
+    if (!!frm.doc['sample']) {
+      const {
+        message: sc
+      } = await frappe.db.get_value('Sample Collection', frm.doc['sample'], 'docstatus');
+      const status = sc.docstatus ? 'Collected' : 'Not Collected';
+      dashboard_indicators.push([`Sample - ${status}`, get_color(status)]);
+    }
+
+    if (dashboard_indicators.length > 0) {
+      dashboard_indicators.forEach(([label, color]) => frm.dashboard.add_indicator(label, color));
       frm.dashboard.show();
     }
   }
 
-  function add_menus_items(frm) {
+  function render_clone_action(frm) {
     if (['Discarded', 'Rejected'].includes(frm.doc.workflow_state)) {
       frm.page.add_menu_item('Clone Test', async function () {
         const {
@@ -108,10 +126,39 @@ var nd_customization = (function () {
     }
   }
 
+  function render_delivery_actions(frm) {
+    if (frm.doc.docstatus === 1) {
+      const is_delivered = !!frm.doc.delivery_time;
+      frm.add_custom_button('Mark Delivered', async function () {
+        await frappe.call({
+          method: 'nd_customization.api.lab_test.deliver_result',
+          args: {
+            lab_test: frm.doc.name
+          }
+        });
+        frm.reload_doc();
+      }).toggleClass('disabled', is_delivered);
+
+      if (is_delivered) {
+        frm.page.add_menu_item('Mark Undelivered', async function () {
+          await frappe.call({
+            method: 'nd_customization.api.lab_test.deliver_result',
+            args: {
+              lab_test: frm.doc.name,
+              revert: 1
+            }
+          });
+          frm.reload_doc();
+        });
+      }
+    }
+  }
+
   const lab_test = {
     refresh: function (frm) {
       render_dashboard(frm);
-      add_menus_items(frm);
+      render_clone_action(frm);
+      render_delivery_actions(frm);
 
       if (frm.doc.docstatus === 0 && frm.doc.workflow_state === 'Discarded') {
         frm.fields.map(({
@@ -126,6 +173,21 @@ var nd_customization = (function () {
     },
     on_submit: function (frm) {
       frm.reload_doc();
+    }
+  };
+  const lab_test_list = {
+    has_indicator_for_draft: true,
+    add_fields: ['docstatus', 'workflow_state', 'delivery_time'],
+    get_indicator: function ({
+      docstatus,
+      workflow_state,
+      delivery_time
+    }) {
+      if (docstatus === 1 && workflow_state === 'Completed' && moment().isAfter(delivery_time)) {
+        return ['Delivered', 'black', `workflow_state,=,Completed|delivery_time,<,${frappe.datetime.now_datetime()}`];
+      }
+
+      return [workflow_state, get_color(workflow_state), `workflow_state,=,${workflow_state}`];
     }
   };
 
@@ -156,6 +218,7 @@ var nd_customization = (function () {
     patient,
     lab_test_template,
     lab_test,
+    lab_test_list,
     sales_invoice
   };
 
