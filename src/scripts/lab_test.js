@@ -27,7 +27,7 @@ async function render_dashboard(frm) {
   }
 }
 
-function add_menus_items(frm) {
+function render_clone_action(frm) {
   if (['Discarded', 'Rejected'].includes(frm.doc.workflow_state)) {
     frm.page.add_menu_item('Clone Test', async function() {
       const { doc } = frm;
@@ -43,10 +43,35 @@ function add_menus_items(frm) {
   }
 }
 
+function render_delivery_actions(frm) {
+  if (frm.doc.docstatus === 1) {
+    const is_delivered = !!frm.doc.delivery_time;
+    frm
+      .add_custom_button('Mark Delivered', async function() {
+        await frappe.call({
+          method: 'nd_customization.api.lab_test.deliver_result',
+          args: { lab_test: frm.doc.name },
+        });
+        frm.reload_doc();
+      })
+      .toggleClass('disabled', is_delivered);
+    if (is_delivered) {
+      frm.page.add_menu_item('Mark Undelivered', async function() {
+        await frappe.call({
+          method: 'nd_customization.api.lab_test.deliver_result',
+          args: { lab_test: frm.doc.name, revert: 1 },
+        });
+        frm.reload_doc();
+      });
+    }
+  }
+}
+
 export const lab_test = {
   refresh: function(frm) {
     render_dashboard(frm);
-    add_menus_items(frm);
+    render_clone_action(frm);
+    render_delivery_actions(frm);
     if (frm.doc.docstatus === 0 && frm.doc.workflow_state === 'Discarded') {
       frm.fields
         .map(({ df }) => df.fieldname)
