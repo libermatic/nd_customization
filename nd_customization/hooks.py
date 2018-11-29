@@ -112,6 +112,7 @@ app_include_js = '/assets/nd_customization/js/nd_customization.iife.js'
 
 # include js in doctype views
 doctype_js = {
+    'Physician': 'public/js/cscripts/physician.js',
     'Patient': 'public/js/cscripts/patient.js',
     'Lab Test Template': 'public/js/cscripts/lab_test_template.js',
     'Lab Test': 'public/js/cscripts/lab_test.js',

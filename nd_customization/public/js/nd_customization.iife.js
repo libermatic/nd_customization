@@ -3,6 +3,16 @@ var nd_customization = (function () {
 
   // Copyright (c) 2018, Libermatic and contributors
   // For license information, please see license.txt
+  const physician = {
+    employee: function (frm) {
+      if (frm.doc.__islocal) {
+        ['employee', 'designation', 'first_name', 'mobile_phone'].forEach(field => frm.set_value(field, null));
+      }
+    }
+  };
+
+  // Copyright (c) 2018, Libermatic and contributors
+  // For license information, please see license.txt
   const patient = {
     setup: function (frm) {
       frm.age_in_years = frappe.ui.form.make_control({
@@ -142,6 +152,7 @@ var nd_customization = (function () {
   };
 
   var scripts = {
+    physician,
     patient,
     lab_test_template,
     lab_test,
