@@ -4,9 +4,9 @@
   "doctype": "Workflow", 
   "document_type": "Lab Test", 
   "is_active": 1, 
-  "modified": "2018-11-21 19:26:05.021823", 
+  "modified": "2018-11-29 23:43:32.249055", 
   "name": "Lab Test Workflow", 
-  "override_status": 0, 
+  "override_status": 1, 
   "states": [
    {
     "allow_edit": "Laboratory User", 
@@ -21,8 +21,8 @@
     "doc_status": "0", 
     "message": null, 
     "state": "Discarded", 
-    "update_field": "", 
-    "update_value": ""
+    "update_field": null, 
+    "update_value": null
    }, 
    {
     "allow_edit": "Laboratory User", 
@@ -31,30 +31,6 @@
     "state": "Completed", 
     "update_field": "status", 
     "update_value": "Completed"
-   }, 
-   {
-    "allow_edit": "LabTest Approver", 
-    "doc_status": "1", 
-    "message": null, 
-    "state": "Approved", 
-    "update_field": "", 
-    "update_value": ""
-   }, 
-   {
-    "allow_edit": "LabTest Approver", 
-    "doc_status": "1", 
-    "message": null, 
-    "state": "Rejected", 
-    "update_field": "", 
-    "update_value": ""
-   }, 
-   {
-    "allow_edit": "Healthcare Administrator", 
-    "doc_status": "2", 
-    "message": null, 
-    "state": "Cancelled", 
-    "update_field": "status", 
-    "update_value": "Cancelled"
    }
   ], 
   "transitions": [
@@ -69,24 +45,6 @@
     "allowed": "Laboratory User", 
     "next_state": "Completed", 
     "state": "Pending"
-   }, 
-   {
-    "action": "Approve", 
-    "allowed": "LabTest Approver", 
-    "next_state": "Approved", 
-    "state": "Completed"
-   }, 
-   {
-    "action": "Reject", 
-    "allowed": "LabTest Approver", 
-    "next_state": "Rejected", 
-    "state": "Completed"
-   }, 
-   {
-    "action": "Cancel", 
-    "allowed": "Laboratory User", 
-    "next_state": "Cancelled", 
-    "state": "Completed"
    }
   ], 
   "workflow_name": "Lab Test Workflow", 

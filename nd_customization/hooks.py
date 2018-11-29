@@ -62,6 +62,7 @@ fixtures = [
             'Lab Test Template-test_custom_result',
             'Lab Test Template-sample_in_print',
             'Lab Test-sample_in_print',
+            'Lab Test-delivery_time',
             'Healthcare Settings-templates_use_naming_series',
         ]]],
     },
@@ -112,12 +113,15 @@ app_include_js = '/assets/nd_customization/js/nd_customization.iife.js'
 
 # include js in doctype views
 doctype_js = {
+    'Physician': 'public/js/cscripts/physician.js',
     'Patient': 'public/js/cscripts/patient.js',
     'Lab Test Template': 'public/js/cscripts/lab_test_template.js',
     'Lab Test': 'public/js/cscripts/lab_test.js',
     'Sales Invoice': 'public/js/cscripts/sales_invoice.js',
 }
-# doctype_list_js = {'doctype': 'public/js/doctype_list.js'}
+doctype_list_js = {
+    'Lab Test': 'public/js/cscripts/lab_test_list.js',
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
