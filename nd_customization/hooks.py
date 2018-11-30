@@ -44,6 +44,8 @@ fixtures = [
             'Patient-dob-reqd',
             'Patient-mobile-reqd',
             'Healthcare Settings-require_test_result_approval-hidden',
+            'Normal Test Template-test_uom-depends_on',
+            'Normal Test Template-normal_range-depends_on',
         ]]],
     },
     {
@@ -64,6 +66,7 @@ fixtures = [
             'Lab Test-sample_in_print',
             'Lab Test-delivery_time',
             'Healthcare Settings-templates_use_naming_series',
+            'Normal Test Template-is_subsection',
         ]]],
     },
     {

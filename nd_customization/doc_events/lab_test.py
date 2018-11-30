@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import frappe
 from erpnext.healthcare.doctype.lab_test.lab_test import update_status
 
+from nd_customization.api.lab_test import change_test_loading
+
 
 def validate(doc, method):
     if not doc.is_new():
@@ -12,29 +14,40 @@ def validate(doc, method):
 
 
 def after_insert(doc, method):
-    if doc.template:
-        template = frappe.get_doc('Lab Test Template', doc.template)
-        if template and not doc.test_comment and template.test_comment:
+    template = frappe.get_doc('Lab Test Template', doc.template)
+    if template:
+        if not doc.test_comment and template.test_comment:
             frappe.db.set_value(
                 'Lab Test',
                 doc.name,
                 'test_comment',
                 template.test_comment,
             )
-        if template and not doc.custom_result and template.test_custom_result:
+        if not doc.custom_result and template.test_custom_result:
             frappe.db.set_value(
                 'Lab Test',
                 doc.name,
                 'custom_result',
                 template.test_custom_result,
             )
-        if template and doc.sample and template.sample_in_print:
+        if doc.sample and template.sample_in_print:
             frappe.db.set_value(
                 'Lab Test',
                 doc.name,
                 'sample_in_print',
                 template.sample_in_print,
             )
+        if template.test_template_type == 'Compound':
+            change_test_loading(doc, template)
+
+        if template.test_template_type == 'No Result' and not doc.test_name:
+            update = {
+                'test_name': template.test_name,
+                'department': template.department,
+                'test_group': template.test_group,
+            }
+            for k, v in update.iteritems():
+                frappe.db.set_value('Lab Test', doc.name, k, v)
         doc.reload()
 
 
