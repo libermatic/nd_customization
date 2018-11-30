@@ -6,6 +6,7 @@ from erpnext.healthcare.doctype.lab_test.lab_test \
     import create_sample_collection, load_result_format
 
 from nd_customization.api.workflow import apply_workflow
+from nd_customization.api.lab_test import change_test_loading
 
 
 def validate(doc, method):
@@ -49,6 +50,7 @@ def on_submit(doc, method):
                     test.insert(ignore_permissions=True)
                     create_sample_collection(test, template, patient, doc.name)
                     load_result_format(test, template, None, doc.name)
+                    change_test_loading(test, template)
                     frappe.db.set_value(
                         'Sales Invoice Item',
                         item.name,
