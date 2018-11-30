@@ -236,9 +236,8 @@
               </thead>
               <tbody>
                 {% for item in doc.normal_test_items %}
-                {% set will_separate = loop.index0 > 0 and not item.normal_range and
-                  not item.test_uom and not item.result_value and not item.test_event
-                  and item.test_name %}
+                  {% set will_separate = item.test_name
+                    and not frappe.utils.cint(item.require_result_value) %}
                   {% set will_indent = not item.test_name and item.test_event %}
                   <tr class="{{ 'nd-separate' if will_separate else '' -}}
                   {{- 'nd-indent' if will_indent else ''  }}">
