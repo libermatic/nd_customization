@@ -423,5 +423,39 @@
   "property": "collapsible", 
   "property_type": "Check", 
   "value": "1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Normal Test Template", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "test_uom", 
+  "modified": "2018-11-30 13:58:15.041079", 
+  "name": "Normal Test Template-test_uom-depends_on", 
+  "property": "depends_on", 
+  "property_type": "Data", 
+  "value": "eval:doc.is_subsection!=1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Normal Test Template", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "normal_range", 
+  "modified": "2018-11-30 13:58:15.047808", 
+  "name": "Normal Test Template-normal_range-depends_on", 
+  "property": "depends_on", 
+  "property_type": "Data", 
+  "value": "eval:doc.is_subsection!=1"
  }
 ]
