@@ -106,6 +106,7 @@ def _make_lab_test(patient, template, invoice, result_date):
         'mobile': patient.mobile,
         'company': invoice.company,
         'department': template.department,
+        'test_group': template.test_group,
         'report_preference': patient.report_preference,
         'test_name': template.test_name,
         'template': template.name,

@@ -35,6 +35,14 @@ def after_insert(doc, method):
                 'sample_in_print',
                 template.sample_in_print,
             )
+        if template.test_template_type == 'No Result' and not doc.test_name:
+            update = {
+                'test_name': template.test_name,
+                'department': template.department,
+                'test_group': template.test_group,
+            }
+            for k, v in update.iteritems():
+                frappe.db.set_value('Lab Test', doc.name, k, v)
         doc.reload()
 
 
