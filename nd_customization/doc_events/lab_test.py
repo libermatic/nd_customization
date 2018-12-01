@@ -48,6 +48,8 @@ def after_insert(doc, method):
             }
             for k, v in update.iteritems():
                 frappe.db.set_value('Lab Test', doc.name, k, v)
+        for field in ['employee', 'employee_name', 'employee_designation']:
+            frappe.db.set_value('Lab Test', doc.name, field, None)
         doc.reload()
 
 
