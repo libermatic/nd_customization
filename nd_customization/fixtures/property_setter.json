@@ -457,5 +457,22 @@
   "property": "depends_on", 
   "property_type": "Data", 
   "value": "eval:doc.is_subsection!=1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Lab Test Template", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "test_group", 
+  "modified": "2018-11-30 22:40:46.513685", 
+  "name": "Lab Test Template-test_group-default", 
+  "property": "default", 
+  "property_type": "Text", 
+  "value": "Laboratory"
  }
 ]
