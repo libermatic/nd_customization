@@ -41,6 +41,7 @@ fixtures = [
             'Lab Test-sample-in_standard_filter',
             'Lab Test Template-section_break_description-label',
             'Lab Test Template-section_break_description-collapsible',
+            'Lab Test Template-test_group-default',
             'Patient-dob-reqd',
             'Patient-mobile-reqd',
             'Healthcare Settings-require_test_result_approval-hidden',
@@ -67,6 +68,7 @@ fixtures = [
             'Lab Test-delivery_time',
             'Healthcare Settings-templates_use_naming_series',
             'Normal Test Template-is_subsection',
+            'Normal Test Items-highlight',
         ]]],
     },
     {
