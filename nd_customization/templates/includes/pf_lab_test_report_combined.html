@@ -1,0 +1,343 @@
+{% set ack_height = '6em' %}
+
+<style>
+  @media screen {
+    .print-format {
+      padding: {{ page_margin or '10mm' }};
+    }
+  }
+  /* frappe pdf hack won't work with headers and footers tho */
+  @media print {
+    .print-format {
+      margin-left: {{ page_margin or '10mm' }}mm;
+      margin-right: {{ page_margin or '10mm' }}mm;
+    }
+  }
+  @page {
+    size: {{ page_size or 'A4' }};
+    margin: {{ page_margin  }};
+  }
+
+  table.nd-page-layout {
+    width: 100%;
+  }
+  table.nd-page-layout > thead > tr > td,
+  table.nd-page-layout > tbody > tr > td,
+  table.nd-page-layout > tfoot > tr > td {
+    padding: 0 !important;
+  }
+  table.nd-page-layout > thead {
+    display: table-header-group;
+  }
+  table.nd-page-layout > tfoot {
+    display: table-footer-group;
+  }
+  table.nd-page-layout > tbody > tr {
+    height: calc({{ page_height or '297mm' }} - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * {{ page_margin or '10mm' }});
+  }
+  table.nd-page-layout > tbody > tr > td {
+    position: relative;
+    padding-bottom: {{ ack_height }} !important;
+  }
+  table.nd-page-layout > thead > tr {
+    height: {{ header_height or '0mm' }};
+  }
+  table.nd-page-layout > tfoot > tr {
+    height: {{ footer_height or '0mm' }};
+  }
+  table.nd-page-layout > tfoot > tr > td {
+    vertical-align: bottom !important;
+    position: relative;
+  }
+  table.nd-page-layout > tfoot > tr > td > div {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+  }
+
+  .nd-docstatus {
+    margin: 1em 0;
+  }
+  .nd-docstatus .badge {
+    font-variant: all-small-caps;
+    background-color: #36414c;
+    color: #fff;
+  }
+
+  .nd-rep-details {
+    border-top: 1px solid {{ style.border_color }};
+    border-bottom: 1px solid {{ style.border_color }};
+    padding: 0.4em 0;
+    line-height: 1.6;
+  }
+  .nd-rep-details dl {
+    margin: 0;
+  }
+  .nd-rep-details dl > * {
+    display: inline;
+    font-weight: normal;
+  }
+  .nd-rep-details dt {
+    min-width: 5em;
+  }
+  .nd-rep-details dt:after {
+    content: ':';
+    margin: 0 0.5em;
+  }
+
+  .nd-rep-items {
+    margin-top: 1.5em;
+  }
+  .nd-rep-items > h1 {
+    font-size: 1.3em;
+    margin: 0;
+  }
+  .nd-rep-items > table, .nd-rep-items > div {
+    margin: 0.8em 0;
+    width: 100%;
+  }
+  .nd-rep-items > table > caption {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0 0 0.3em;
+    color: inherit;
+  }
+  .nd-rep-items > table th, .nd-rep-items > table td {
+    padding: 2pt !important;
+    line-height: 1.4;
+  }
+  .nd-rep-items tr.nd-separate > td {
+    font-weight: bold;
+    border-top: 1px solid {{ style.border_color }};
+  }
+  .nd-rep-items tr.nd-indent > td:first-of-type {
+    padding-left: 1.5em !important;
+  }
+
+  .nd-rep-docname {
+    float: right;
+    font-weight: normal;
+    font-size: 0.9em;
+  }
+
+  .nd-rep-custom {
+    padding: 0.4em 0;
+  }
+
+  .nd-rep-comment {
+    padding: 0.4em 0;
+  }
+  .nd-rep-comment > h3 {
+    font-size: 1em;
+    margin: 0 0 0.3em;
+    padding-bottom: 0.1em;
+    border-bottom: 1px solid {{ style.border_color }};
+  }
+  .nd-rep-comment > p {
+    font-size: 0.9em;
+  }
+
+  .nd-rep-ack {
+    position: absolute;
+    bottom: 0;
+    height: {{ ack_height }};
+    width: 50%;
+  }
+  .nd-rep-ack > div {
+    position: absolute;
+    bottom: 0;
+    padding: 0.5em 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .nd-strong {
+    font-weight: bold;
+  }
+  .nd-mono {
+    font-family: mono;
+  }
+</style>
+
+{% set page_header, page_footer = frappe.db.get_value(
+  'Letter Head', nd_letter_head, ['content', 'footer']
+  ) if nd_letter_head else ('', '')
+%}
+
+<table class="nd-page-layout">
+  <thead class="hidden-pdf">
+    <tr>
+      <td>
+        <div id="header-html">
+          {{ page_header if not no_letterhead else '' }}
+        </div>
+      </td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <section class="nd-rep-details">
+          {% set patient = frappe.get_doc('Patient', doc.patient) %}
+          <div class="row">
+            <dl class="col-xs-6">
+              <dt>Name</dt>
+              <dd>
+                <span class="nd-strong">{{ doc.patient_name }}</span>
+                (<span class="nd-mono">{{ doc.patient }}</span>)
+              </dd>
+            </dl>
+            <dl class="col-xs-6">
+              <dt>Referred By</dt>
+              <dd>{{ doc.physician or '' }}</dd>
+            </dl>
+          </div>
+          <div class="row">
+            <dl class="col-xs-6">
+              <dt>Bio</dt>
+              <dd>{{ doc.patient_age|lower|replace(' year(s)', 'Y')|replace(' month(s)', 'M')|replace(' day(s)', 'D') or '?' }} / {{ doc.patient_sex }}</dd>
+            </dl>
+            <dl class="col-xs-6">
+              <dt>Invoice</dt>
+              <dd class="nd-mono nd-mono">{{ doc.invoice }}</dd>
+            </dl>
+          </div>
+          <div class="row">
+            <dl class="col-xs-6">
+              <dt>Contact</dt>
+              <dd>{{ patient.address_line1 or '' }}</dd>
+              <dd>{{ patient.mobile or '' }}</dd>
+            </dl>
+          </div>
+        </section>
+
+        {% set tests = frappe.get_all('Lab Test', filters={ 'invoice': doc.invoice }) %}
+        <section class="nd-rep-items-container">
+          {% for test in frappe.get_all('Lab Test', filters={ 'invoice': doc.invoice }) %}
+          <div class="nd-rep-items">
+            {% set other = frappe.get_doc('Lab Test', test.name) %}
+            {% if other.status != 'Completed' %}
+            <div class="nd-docstatus">
+              <span class="badge">
+                {{ other.status }}
+              </span>
+            </div>
+            {% endif %}
+
+            <h1>Department of {{ other.department }}</h1>
+
+            {% if other.normal_test_items %}
+            <table>
+              <caption>
+                {{ other.test_name }}
+                <span class="nd-mono nd-rep-docname">{{ other.name }}</span>
+              </caption>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th class="text-right">Result</th>
+                  <th>Units</th>
+                  <th>Biological Reference</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in other.normal_test_items %}
+                {% set will_separate = item.test_name
+                  and not frappe.utils.cint(item.require_result_value) %}
+                  {% set will_indent = not item.test_name and item.test_event %}
+                  <tr class="{{ 'nd-separate' if will_separate else '' -}}
+                  {{- 'nd-indent' if will_indent else ''  }}">
+                  <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
+                  <td class="text-right {{ 'nd-strong' if item.highlight else '' }}">{{ item.result_value or '' }}</td>
+                  <td>{{ item.test_uom or '' }}</td>
+                  <td>{{ item.normal_range|replace('\n', '<br />') if item.normal_range else '' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+            {% if other.special_test_items %}
+            <table>
+              <caption>
+                {{ other.test_name }}
+                <span class="nd-mono nd-rep-docname">{{ other.name }}</span>
+              </caption>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in other.special_test_items %}
+                <tr>
+                  <td>{{ item.test_particulars }}</td>
+                  <td>{{ item.result_value }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+            {% if other.sensitivity_test_items %}
+            <table>
+              <caption>
+                {{ other.test_name }}
+                <span class="nd-mono nd-rep-docname">{{ other.name }}</span>
+              </caption>
+              <thead>
+                <tr>
+                  <th>Test</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in other.sensitivity_test_items %}
+                <tr>
+                  <td>{{ item.antibiotic }}</td>
+                  <td>{{ item.antibiotic_sensitivity }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+
+            {% if other.custom_result %}
+            <div class="nd-rep-custom">{{ other.custom_result }}</div>
+            {% endif %}
+
+            {% if other.sample and frappe.utils.cint(other.sample_in_print) %}
+            <div class="nd-rep-comment">
+              {% set sample = frappe.get_doc('Sample Collection', other.sample) %}
+              <h3>Sample</h3>
+              <p>{{ sample.sample }} – {{ sample.get_formatted('sample_quantity') }} {{ sample.sample_uom }}</p>
+              {% if sample.sample_collection_details %}
+              <p>{{ sample.sample_collection_details }}</p>
+              {% endif %}
+            </div>
+            {% endif %}
+
+            {% if other.test_comment %}
+            <div class="nd-rep-comment">
+              <h3>Comments</h3>
+              <p>{{ other.test_comment }}</p>
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </section>
+        <section class="nd-rep-ack">
+          <div>+ Technician</div>
+        </section>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot class="hidden-pdf">
+    <tr>
+      <td>
+        <div id="footer-html">
+          {{ page_footer if not no_letterhead else '' }}
+        </div>
+      </td>
+    </tr>
+  </tfoot>
+</table>
