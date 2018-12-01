@@ -1,0 +1,1 @@
+nd_customization.patches.v0_0.add_sales_partner_as_party_type

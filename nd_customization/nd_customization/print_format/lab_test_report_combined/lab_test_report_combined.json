@@ -1,0 +1,22 @@
+{
+ "align_labels_right": 0, 
+ "creation": "2018-12-01 20:50:11.136126", 
+ "custom_format": 1, 
+ "disabled": 0, 
+ "doc_type": "Lab Test", 
+ "docstatus": 0, 
+ "doctype": "Print Format", 
+ "font": "Default", 
+ "html": "{% set page_size = 'A4' %}\n{% set page_height = '297mm' %}\n{% set page_margin = '10mm' %}\n{% set header_height = '25mm' %}\n{% set footer_height = '15mm' %}\n{% set nd_letter_head = 'Lab Test' %}\n\n{% extends \"templates/includes/pf_lab_test_report_combined.html\" %}\n", 
+ "idx": 0, 
+ "line_breaks": 0, 
+ "modified": "2018-12-01 21:10:15.712975", 
+ "modified_by": "Administrator", 
+ "module": "ND Customization", 
+ "name": "Lab Test Report Combined", 
+ "owner": "Administrator", 
+ "print_format_builder": 0, 
+ "print_format_type": "Server", 
+ "show_section_headings": 0, 
+ "standard": "Yes"
+}
