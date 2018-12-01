@@ -155,16 +155,19 @@ var nd_customization = (function () {
   }
 
   const lab_test = {
-    refresh: function (frm) {
+    onload: function (frm) {
       render_dashboard(frm);
       render_clone_action(frm);
       render_delivery_actions(frm);
-
+    },
+    refresh: function (frm) {
       if (frm.doc.docstatus === 0 && frm.doc.workflow_state === 'Discarded') {
         frm.fields.map(({
           df
         }) => df.fieldname).filter(field => field).forEach(field => frm.set_df_property(field, 'read_only', 1));
       }
+
+      frm.toggle_display('employee', !frm.doc.__islocal);
     },
     employee: function (frm) {
       if (!frm.doc['employee']) {
