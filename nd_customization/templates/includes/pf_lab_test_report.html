@@ -172,10 +172,10 @@
   <tbody>
     <tr>
       <td>
-        {% if doc.status != 'Approved' %}
+        {% if doc.status != 'Completed' %}
         <section class="nd-docstatus">
           <span class="badge">
-            {{ 'Pending Approval' if doc.status == 'Completed' else doc.status }}
+            {{ doc.status }}
           </span>
         </section>
         {% endif %}
@@ -242,7 +242,7 @@
                   <tr class="{{ 'nd-separate' if will_separate else '' -}}
                   {{- 'nd-indent' if will_indent else ''  }}">
                   <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
-                  <td class="text-right">{{ item.result_value or '' }}</td>
+                  <td class="text-right {{ 'nd-strong' if item.highlight else '' }}">{{ item.result_value or '' }}</td>
                   <td>{{ item.test_uom or '' }}</td>
                   <td>{{ item.normal_range|replace('\n', '<br />') if item.normal_range else '' }}</td>
                 </tr>
