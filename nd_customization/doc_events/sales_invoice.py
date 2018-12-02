@@ -4,6 +4,9 @@ import frappe
 from frappe.utils import flt, fmt_money
 from erpnext.healthcare.doctype.lab_test.lab_test \
     import create_sample_collection, load_result_format
+from erpnext.accounts.doctype.sales_invoice.sales_invoice \
+    import get_bank_cash_account
+from toolz import pluck
 
 from nd_customization.api.workflow import apply_workflow
 from nd_customization.api.lab_test import change_test_loading
@@ -71,9 +74,45 @@ def on_submit(doc, method):
         else:
             frappe.msgprint('No Lab Test created.')
         doc.reload()
+    if doc.sales_partner:
+        settings = frappe.get_single('ND Settings')
+        je = _make_journal_entry(doc, frappe._dict({
+            'voucher_type':
+                'Cash Entry' if settings.sales_partner_mop == 'Cash' else
+                'Bank Entry',
+            'accounts': [
+                frappe._dict({
+                    'account': settings.sales_partner_ca,
+                    'cost_center': settings.sales_partner_cc,
+                    'party_type': 'Sales Partner',
+                    'party': doc.sales_partner,
+                    'debit': 0,
+                }),
+                frappe._dict({
+                    'account': get_bank_cash_account(
+                        settings.sales_partner_mop, doc.company
+                    ).get('account'),
+                    'credit': 0,
+                }),
+            ],
+            'user_remark': _get_je_remark(doc),
+            'pay_to_recd_from': doc.sales_partner,
+        }))
+        je.insert(ignore_permissions=True)
 
 
 def on_cancel(doc, method):
+    if doc.sales_partner:
+        jes = frappe.get_all(
+            'Journal Entry',
+            filters={
+                'docstatus': 0,
+                'reference_dt': doc.doctype,
+                'reference_dn': doc.name,
+            }
+        )
+        for name in pluck('name', jes):
+            frappe.delete_doc('Journal Entry', name)
     if doc.patient:
         lab_tests = []
         for item in doc.items:
@@ -85,7 +124,7 @@ def on_cancel(doc, method):
                     lab_tests.append(item.reference_dn)
         if lab_tests:
             frappe.msgprint(
-                'Lab Test(s) {} deleted.'.format(', '.join(lab_tests))
+                'Lab Test(s) {} discarded.'.format(', '.join(lab_tests))
             )
         doc.reload()
 
@@ -115,3 +154,26 @@ def _make_lab_test(patient, template, invoice, result_date):
         'result_date': result_date,
         'workflow_state': 'Pending',
     })
+
+
+def _make_journal_entry(doc, args):
+    je = frappe.get_doc({
+        'doctype': 'Journal Entry',
+        'voucher_type': args.voucher_type,
+        'posting_date': doc.posting_date,
+        'company': doc.company,
+        'user_remark': args.user_remark,
+        'pay_to_recd_from': args.pay_to_recd_from,
+        'reference_dt': doc.doctype,
+        'reference_dn': doc.name,
+    })
+    for account in args.accounts:
+        je.append('accounts', account)
+    return je
+
+
+def _get_je_remark(doc):
+    remark = '{}: {}\n'.format(doc.patient, doc.patient_name)
+    for item in doc.items:
+        remark += '/ {}: {}\n'.format(item.item_code, item.item_name)
+    return remark
