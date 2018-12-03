@@ -199,7 +199,7 @@
             </dl>
             <dl class="col-xs-6">
               <dt>Invoice</dt>
-              <dd class="nd-mono nd-mono">{{ doc.invoice }}</dd>
+              <dd class="nd-mono">{{ doc.invoice }}</dd>
             </dl>
           </div>
           <div class="row">
@@ -230,7 +230,13 @@
             <table>
               <caption>
                 {{ other.test_name }}
-                <span class="nd-mono nd-rep-docname">{{ other.name }}</span>
+                <div class="nd-rep-docname">
+                  <span class="nd-mono">{{ other.name }}</span>
+                  {% if doc.submitted_date %}
+                  |
+                  <span class="nd-mono">{{ other.get_formatted('submitted_date') }}</span>
+                  {% endif %}
+                </div>
               </caption>
               <thead>
                 <tr>

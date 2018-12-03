@@ -213,8 +213,17 @@
             </dl>
             <dl class="col-xs-6">
               <dt>Invoice</dt>
-              <dd class="nd-mono nd-mono">{{ doc.invoice }}</dd>
+              <dd class="nd-mono">{{ doc.invoice }}</dd>
             </dl>
+          </div>
+          <div class="row">
+            <dl class="col-xs-6" />
+            {% if doc.submitted_date %}
+            <dl class="col-xs-6">
+              <dt>Completed on</dt>
+              <dd>{{ doc.get_formatted('submitted_date') }}</dd>
+            </dl>
+            {% endif %}
           </div>
         </section>
 

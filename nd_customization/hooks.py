@@ -187,6 +187,7 @@ doc_events = {
     'Lab Test': {
         'validate': 'nd_customization.doc_events.lab_test.validate',
         'after_insert': 'nd_customization.doc_events.lab_test.after_insert',
+        'on_submit': 'nd_customization.doc_events.lab_test.on_submit',
         'before_cancel': 'nd_customization.doc_events.lab_test.before_cancel',
         'on_update_after_submit':
             'nd_customization.doc_events.lab_test.on_update_after_submit',
