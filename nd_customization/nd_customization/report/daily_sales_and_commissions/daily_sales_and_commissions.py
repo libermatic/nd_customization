@@ -25,7 +25,7 @@ def get_columns():
         'Total:Currency:90',
         'Paid:Currency:90',
         'Outstanding:Currency:90',
-        'Commission:Currency:90',
+        'Referring Physician:Link/Physician:120',
         'Sales Partner:Link/Sales Partner:120',
     ]
 
@@ -86,6 +86,7 @@ def get_data(filters):
             SELECT
                 name AS sales_invoice,
                 patient,
+                ref_physician AS physician,
                 posting_date,
                 posting_time,
                 total AS amount,
@@ -93,7 +94,6 @@ def get_data(filters):
                 grand_total AS total,
                 paid_amount AS paid,
                 outstanding_amount AS outstanding,
-                total_commission AS commission,
                 sales_partner
             FROM `tabSales Invoice`
             WHERE {clauses}
@@ -102,7 +102,7 @@ def get_data(filters):
         as_dict=1,
     )
     sumby = compose(
-        partial(reduce, add),
+        lambda x: reduce(add, x, 0.0),
         partial(pluck, seqs=data),
     )
     return data + [{
@@ -112,7 +112,6 @@ def get_data(filters):
         'total': sumby('total'),
         'paid': sumby('paid'),
         'outstanding': sumby('outstanding'),
-        'commission': sumby('commission'),
     }]
 
 
@@ -127,7 +126,7 @@ def make_row(row):
         'sales_invoice', 'patient', 'posting_datetime',
         'amount', 'discount', 'total',
         'paid', 'outstanding',
-        'commission', 'sales_partner',
+        'physician', 'sales_partner',
     ]
     return compose(
         partial(get, keys, default=''),
