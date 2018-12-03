@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import frappe
-from frappe.utils import flt, fmt_money
+from frappe.utils import flt, fmt_money, cint
 from erpnext.healthcare.doctype.lab_test.lab_test \
     import create_sample_collection, load_result_format
 from erpnext.accounts.doctype.sales_invoice.sales_invoice \
@@ -34,7 +34,7 @@ def validate(doc, method):
 
 
 def on_submit(doc, method):
-    if doc.patient:
+    if doc.patient and not cint(doc.is_return):
         lab_tests = []
         patient = frappe.get_doc('Patient', doc.patient)
         for item in doc.items:
@@ -74,7 +74,7 @@ def on_submit(doc, method):
         else:
             frappe.msgprint('No Lab Test created.')
         doc.reload()
-    if doc.sales_partner:
+    if doc.sales_partner and not cint(doc.is_return):
         settings = frappe.get_single('ND Settings')
         je = _make_journal_entry(doc, frappe._dict({
             'voucher_type':
