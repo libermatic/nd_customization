@@ -53,6 +53,15 @@ def after_insert(doc, method):
         doc.reload()
 
 
+def on_submit(doc, method):
+    frappe.db.set_value(
+        'Lab Test',
+        doc.name,
+        'submitted_date',
+        frappe.utils.now(),
+    )
+
+
 def before_cancel(doc, method):
     doc.flags.ignore_links = True
 

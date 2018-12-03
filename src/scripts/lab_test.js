@@ -86,6 +86,41 @@ function render_delivery_actions(frm) {
   }
 }
 
+function render_invoice_actions(frm) {
+  if (!frm.doc.__islocal && frm.doc.docstatus < 2) {
+    if (!frm.doc.invoice) {
+      const dialog = new frappe.ui.Dialog({
+        title: 'Select Sales Invoice',
+        fields: [
+          {
+            fieldname: 'sales_invoice',
+            fieldtype: 'Link',
+            options: 'Sales Invoice',
+            label: 'Sales Invoice',
+            get_query: {
+              filters: { patient: frm.doc.patient },
+            },
+          },
+        ],
+        primary_action: async function() {
+          const sales_invoice = this.get_value('sales_invoice');
+          await frappe.call({
+            method: 'nd_customization.api.lab_test.link_invoice',
+            args: { lab_test: frm.doc.name, sales_invoice },
+            freeze: true,
+            freeze_message: `Linking Sales Invoice: ${sales_invoice}`,
+          });
+          this.hide();
+          frm.reload_doc();
+        },
+      });
+      frm.add_custom_button('Link Invoice', () => {
+        dialog.show();
+      });
+    }
+  }
+}
+
 export const lab_test = {
   onload: function(frm) {
     render_dashboard(frm);
@@ -93,6 +128,7 @@ export const lab_test = {
     render_delivery_actions(frm);
   },
   refresh: function(frm) {
+    render_invoice_actions(frm);
     if (frm.doc.docstatus === 0 && frm.doc.workflow_state === 'Discarded') {
       frm.fields
         .map(({ df }) => df.fieldname)

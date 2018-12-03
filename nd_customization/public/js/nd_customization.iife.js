@@ -154,6 +154,44 @@ var nd_customization = (function () {
     }
   }
 
+  function render_invoice_actions(frm) {
+    if (!frm.doc.__islocal && frm.doc.docstatus < 2) {
+      if (!frm.doc.invoice) {
+        const dialog = new frappe.ui.Dialog({
+          title: 'Select Sales Invoice',
+          fields: [{
+            fieldname: 'sales_invoice',
+            fieldtype: 'Link',
+            options: 'Sales Invoice',
+            label: 'Sales Invoice',
+            get_query: {
+              filters: {
+                patient: frm.doc.patient
+              }
+            }
+          }],
+          primary_action: async function () {
+            const sales_invoice = this.get_value('sales_invoice');
+            await frappe.call({
+              method: 'nd_customization.api.lab_test.link_invoice',
+              args: {
+                lab_test: frm.doc.name,
+                sales_invoice
+              },
+              freeze: true,
+              freeze_message: `Linking Sales Invoice: ${sales_invoice}`
+            });
+            this.hide();
+            frm.reload_doc();
+          }
+        });
+        frm.add_custom_button('Link Invoice', () => {
+          dialog.show();
+        });
+      }
+    }
+  }
+
   const lab_test = {
     onload: function (frm) {
       render_dashboard(frm);
@@ -161,6 +199,8 @@ var nd_customization = (function () {
       render_delivery_actions(frm);
     },
     refresh: function (frm) {
+      render_invoice_actions(frm);
+
       if (frm.doc.docstatus === 0 && frm.doc.workflow_state === 'Discarded') {
         frm.fields.map(({
           df
@@ -197,6 +237,13 @@ var nd_customization = (function () {
   // Copyright (c) 2018, Libermatic and contributors
   // For license information, please see license.txt
   const sales_invoice = {
+    onload: function (frm) {
+      if (frm.doc.docstatus === 1) {
+        frm.add_custom_button('Lab Test', () => frappe.set_route('List', 'Lab Test', {
+          invoice: frm.doc.name
+        }), __('View'));
+      }
+    },
     patient: async function (frm) {
       const {
         patient

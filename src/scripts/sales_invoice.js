@@ -2,6 +2,15 @@
 // For license information, please see license.txt
 
 export const sales_invoice = {
+  onload: function(frm) {
+    if (frm.doc.docstatus === 1) {
+      frm.add_custom_button(
+        'Lab Test',
+        () => frappe.set_route('List', 'Lab Test', { invoice: frm.doc.name }),
+        __('View')
+      );
+    }
+  },
   patient: async function(frm) {
     const { patient } = frm.doc;
     if (patient) {

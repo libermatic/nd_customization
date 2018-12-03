@@ -136,13 +136,15 @@
     position: absolute;
     bottom: 0;
     height: {{ ack_height }};
-    width: 50%;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    padding-top: 1.8em;
+    font-size: 0.95em;
   }
   .nd-rep-ack > div {
-    position: absolute;
-    bottom: 0;
-    padding: 0.5em 0;
-    width: 100%;
+    padding: 0.2em 0 0.5em;
     text-align: center;
   }
 
@@ -213,8 +215,17 @@
             </dl>
             <dl class="col-xs-6">
               <dt>Invoice</dt>
-              <dd class="nd-mono nd-mono">{{ doc.invoice }}</dd>
+              <dd class="nd-mono">{{ doc.invoice }}</dd>
             </dl>
+          </div>
+          <div class="row">
+            <dl class="col-xs-6" />
+            {% if doc.submitted_date %}
+            <dl class="col-xs-6">
+              <dt>Completed on</dt>
+              <dd>{{ doc.get_formatted('submitted_date') }}</dd>
+            </dl>
+            {% endif %}
           </div>
         </section>
 
@@ -314,8 +325,9 @@
           </section>
           {% endif %}
 
-          <section class="nd-rep-ack">
+          <section class="nd-rep-ack hidden-pdf">
             <div>+ Technician</div>
+            <div>+ Consultant Pathologist</div>
           </section>
       </td>
     </tr>

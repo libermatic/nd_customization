@@ -18,6 +18,7 @@ fixtures = [
     {
         'doctype': 'Property Setter',
         'filters': [['name', 'in', [
+            'Sales Invoice-title_field',
             'Sales Invoice-project-hidden',
             'Sales Invoice-appointment-hidden',
             'Sales Invoice-naming_series-options',
@@ -187,6 +188,7 @@ doc_events = {
     'Lab Test': {
         'validate': 'nd_customization.doc_events.lab_test.validate',
         'after_insert': 'nd_customization.doc_events.lab_test.after_insert',
+        'on_submit': 'nd_customization.doc_events.lab_test.on_submit',
         'before_cancel': 'nd_customization.doc_events.lab_test.before_cancel',
         'on_update_after_submit':
             'nd_customization.doc_events.lab_test.on_update_after_submit',
@@ -227,7 +229,7 @@ doc_events = {
 # Overriding Whitelisted Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-#     "frappe.desk.doctype.event.event.get_events":
-#            "nd_customization.event.get_events"
-# }
+override_whitelisted_methods = {
+    'erpnext.healthcare.doctype.lab_test.lab_test.create_invoice':
+        'nd_customization.api.lab_test.create_invoice'
+}
