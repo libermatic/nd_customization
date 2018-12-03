@@ -102,6 +102,9 @@
   }
 </style>
 
+
+{% if doc.patient %}
+{% set patient = frappe.get_doc('Patient', doc.patient) %}
 <div class="nd-inv">
   {% if not no_letterhead and doc.letter_head %}
   {{ frappe.db.get_value('Letter Head', doc.letter_head, 'content') }}
@@ -116,8 +119,6 @@
     <div>{{ doc.get_formatted('posting_date') }}</div>
     <div>{{ doc.get_formatted('posting_time') }}</div>
   </section>
-
-  {% set patient = frappe.get_doc('Patient', doc.patient) %}
 
   <section class="nd-inv-details">
     <div class="row">
@@ -229,3 +230,8 @@
     </div>
   </section>
 </div>
+{% else %}
+<div class="nd-inv">
+  <p class="text-center">Sales Invoice is not linked to a Patient. Please try other Print Formats.</p>
+</div>
+{% endif %}
