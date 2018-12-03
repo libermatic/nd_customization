@@ -18,6 +18,7 @@ fixtures = [
     {
         'doctype': 'Property Setter',
         'filters': [['name', 'in', [
+            'Sales Invoice-title_field',
             'Sales Invoice-project-hidden',
             'Sales Invoice-appointment-hidden',
             'Sales Invoice-naming_series-options',
