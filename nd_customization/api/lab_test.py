@@ -86,3 +86,16 @@ def _find_item(items):
             if item.item_code == item_code:
                 return item
     return fn
+
+
+@frappe.whitelist()
+def link_invoice(lab_test, sales_invoice):
+    test_doc = frappe.get_doc('Lab Test', lab_test)
+    invoice_doc = frappe.get_doc('Sales Invoice', sales_invoice)
+    if test_doc.docstatus == 2 or invoice_doc.docstatus == 2:
+        frappe.throw('Cannot link cancelled documents.')
+    if test_doc.patient != invoice_doc.patient:
+        frappe.throw(
+            'Lab Test and Sales Invoice belong to different Patients.'
+        )
+    frappe.db.set_value('Lab Test', lab_test, 'invoice', sales_invoice)
