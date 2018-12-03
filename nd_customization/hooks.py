@@ -229,7 +229,7 @@ doc_events = {
 # Overriding Whitelisted Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-#     "frappe.desk.doctype.event.event.get_events":
-#            "nd_customization.event.get_events"
-# }
+override_whitelisted_methods = {
+    'erpnext.healthcare.doctype.lab_test.lab_test.create_invoice':
+        'nd_customization.api.lab_test.create_invoice'
+}

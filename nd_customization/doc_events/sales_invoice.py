@@ -40,10 +40,11 @@ def on_submit(doc, method):
         for item in doc.items:
             test = frappe.get_doc('Lab Test', item.reference_dn) \
                 if item.reference_dt and item.reference_dn else None
-            if test and test.status != 'Cancelled' and not test.invoice:
-                test.invoice = doc.name
-                test.save(ignore_permissions=True)
-                lab_tests.append(item.reference_dn)
+            if test and test.status != 'Cancelled':
+                if not test.invoice:
+                    test.invoice = doc.name
+                    test.save(ignore_permissions=True)
+                    lab_tests.append(item.reference_dn)
             else:
                 template = _get_lab_test_template(item.item_code)
                 if template:
