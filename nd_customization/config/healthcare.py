@@ -15,4 +15,14 @@ def get_data():
                 },
             ]
         },
+        {
+            'label': _('Setup'),
+            'items': [
+                {
+                    'type': 'doctype',
+                    'name': 'ND Settings',
+                    'label': 'ND Settings',
+                },
+            ]
+        },
     ]
