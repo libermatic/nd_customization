@@ -61,7 +61,9 @@ fixtures = [
             'Sales Invoice Item-reference_dt',
             'Sales Invoice Item-reference_dn',
             'Sales Invoice Item-lab_test_result_date',
+            'Sales Invoice Item-lab_test_center',
             'Lab Test Template-naming_series',
+            'Lab Test Template-can_outsource',
             'Lab Test Template-test_comment',
             'Lab Test Template-test_custom_result',
             'Lab Test Template-sample_in_print',
@@ -184,6 +186,9 @@ doctype_list_js = {
 doc_events = {
     'Lab Test Template': {
         'autoname': 'nd_customization.doc_events.lab_test_template.autoname',
+        'after_insert':
+            'nd_customization.doc_events.lab_test_template.after_insert',
+        'on_update': 'nd_customization.doc_events.lab_test_template.on_update',
     },
     'Lab Test': {
         'validate': 'nd_customization.doc_events.lab_test.validate',

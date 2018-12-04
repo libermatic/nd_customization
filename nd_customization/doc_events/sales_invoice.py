@@ -38,36 +38,41 @@ def on_submit(doc, method):
         lab_tests = []
         patient = frappe.get_doc('Patient', doc.patient)
         for item in doc.items:
-            test = frappe.get_doc('Lab Test', item.reference_dn) \
-                if item.reference_dt and item.reference_dn else None
-            if test and test.status != 'Cancelled':
-                if not test.invoice:
-                    test.invoice = doc.name
-                    test.save(ignore_permissions=True)
-                    lab_tests.append(item.reference_dn)
+            if not item.lab_test_center:
+                test = frappe.get_doc('Lab Test', item.reference_dn) \
+                    if item.reference_dt and item.reference_dn else None
+                if test and test.status != 'Cancelled':
+                    if not test.invoice:
+                        test.invoice = doc.name
+                        test.save(ignore_permissions=True)
+                        lab_tests.append(item.reference_dn)
+                else:
+                    template = _get_lab_test_template(item.item_code)
+                    if template:
+                        test = _make_lab_test(
+                            patient, template, doc, item.lab_test_result_date
+                        )
+                        test.insert(ignore_permissions=True)
+                        create_sample_collection(
+                            test, template, patient, doc.name
+                        )
+                        load_result_format(test, template, None, doc.name)
+                        change_test_loading(test, template)
+                        frappe.db.set_value(
+                            'Sales Invoice Item',
+                            item.name,
+                            'reference_dt',
+                            'Lab Test',
+                        )
+                        frappe.db.set_value(
+                            'Sales Invoice Item',
+                            item.name,
+                            'reference_dn',
+                            test.name,
+                        )
+                        lab_tests.append(test.name)
             else:
-                template = _get_lab_test_template(item.item_code)
-                if template:
-                    test = _make_lab_test(
-                        patient, template, doc, item.lab_test_result_date
-                    )
-                    test.insert(ignore_permissions=True)
-                    create_sample_collection(test, template, patient, doc.name)
-                    load_result_format(test, template, None, doc.name)
-                    change_test_loading(test, template)
-                    frappe.db.set_value(
-                        'Sales Invoice Item',
-                        item.name,
-                        'reference_dt',
-                        'Lab Test',
-                    )
-                    frappe.db.set_value(
-                        'Sales Invoice Item',
-                        item.name,
-                        'reference_dn',
-                        test.name,
-                    )
-                    lab_tests.append(test.name)
+                _make_purchase_invoice(doc, item)
         if lab_tests:
             frappe.msgprint(
                 'Lab Test(s) {} created.'.format(', '.join(lab_tests))
@@ -178,3 +183,44 @@ def _get_je_remark(doc):
     for item in doc.items:
         remark += '/ {}: {}\n'.format(item.item_code, item.item_name)
     return remark
+
+
+def _make_purchase_invoice(doc, args):
+    supplier = frappe.db.get_value(
+        'Lab Test Center', args.lab_test_center, 'supplier'
+    )
+    existing = frappe.db.exists(
+        'Purchase Invoice', {'supplier': supplier, 'docstatus': 0},
+    )
+    can_outsource = frappe.db.get_value(
+        'Lab Test Template', args.item_code, 'can_outsource'
+    )
+    if not can_outsource:
+        frappe.throw(
+            '{item_code}: {item_name} cannot be outsourced. Please update '
+            'the Lab Test Template or remove Test Center.'.format(
+                item_code=args.item_code,
+                item_name=args.item_name,
+            )
+        )
+    pi = frappe.get_doc('Purchase Invoice', existing) \
+        if existing else frappe.get_doc({
+            'doctype': 'Purchase Invoice',
+            'supplier': supplier,
+        })
+    desc = '{item_name} for {patient}: {invoice} / {posting_date}'
+    pi.append('items', {
+        'item_code': args.item_code,
+        'qty': args.qty,
+        'description': desc.format(
+            item_name=args.item_name,
+            patient=doc.patient,
+            invoice=doc.name,
+            posting_date=doc.posting_date,
+        ),
+    })
+    if not existing:
+        pi.insert(ignore_permissions=True)
+    else:
+        pi.save()
+    return pi
