@@ -1,6 +1,6 @@
 {
   "name": "nd_customization",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Customization for ND",
   "entry": "src/index.js",
   "main": "nd_customization/public/js/nd_customization.iife.js",
