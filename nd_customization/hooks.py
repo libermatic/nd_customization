@@ -184,6 +184,9 @@ doctype_list_js = {
 doc_events = {
     'Lab Test Template': {
         'autoname': 'nd_customization.doc_events.lab_test_template.autoname',
+        'after_insert':
+            'nd_customization.doc_events.lab_test_template.after_insert',
+        'on_update': 'nd_customization.doc_events.lab_test_template.on_update',
     },
     'Lab Test': {
         'validate': 'nd_customization.doc_events.lab_test.validate',
