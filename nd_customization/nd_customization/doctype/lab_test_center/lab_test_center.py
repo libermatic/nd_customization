@@ -9,8 +9,9 @@ from frappe.model.document import Document
 
 class LabTestCenter(Document):
     def after_insert(self):
-        create_supplier(self)
-        self.reload()
+        if not self.supplier:
+            create_supplier(self)
+            self.reload()
 
 
 def create_supplier(doc):
