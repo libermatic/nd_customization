@@ -25,37 +25,44 @@ _get_subsections = compose(
 
 
 def change_test_loading(doc, template):
-    subsections = _get_subsections(template.normal_test_templates)
-    if subsections:
-        normal_tests_items = frappe.get_all(
-            'Normal Test Items',
-            fields=['name', 'test_name', 'test_event'],
-            filters={
-                'parent': doc.name,
-                'parentfield': 'normal_test_items',
-            }
-        )
-        for item in normal_tests_items:
-            if item.get('test_name') in subsections:
-                frappe.db.set_value(
-                    'Normal Test Items',
-                    item.get('name'),
-                    'require_result_value',
-                    0,
+    if template.test_template_type == 'Compound':
+        subsections = _get_subsections(template.normal_test_templates)
+        if subsections:
+            for item in doc.normal_test_items:
+                if item.test_name in subsections:
+                    frappe.db.set_value(
+                        'Normal Test Items',
+                        item.name,
+                        'require_result_value',
+                        0,
+                    )
+                elif item.test_name and not item.test_event:
+                    frappe.db.set_value(
+                        'Normal Test Items',
+                        item.name,
+                        'test_name',
+                        None,
+                    )
+                    frappe.db.set_value(
+                        'Normal Test Items',
+                        item.name,
+                        'test_event',
+                        item.test_name,
+                    )
+    if template.test_template_type == 'Grouped':
+        for item in doc.normal_test_items:
+            if item.test_name and item.template \
+                    and item.template != doc.template:
+                test_comment = frappe.db.get_value(
+                    'Lab Test Template', item.template, 'test_comment'
                 )
-            elif item.get('test_name') and not item.get('test_event'):
-                frappe.db.set_value(
-                    'Normal Test Items',
-                    item.get('name'),
-                    'test_name',
-                    None,
-                )
-                frappe.db.set_value(
-                    'Normal Test Items',
-                    item.get('name'),
-                    'test_event',
-                    item.get('test_name'),
-                )
+                if test_comment:
+                    frappe.db.set_value(
+                        'Normal Test Items',
+                        item.name,
+                        'test_comment',
+                        test_comment,
+                    )
 
 
 def load_result_format(lab_test, template, prescription, invoice):
