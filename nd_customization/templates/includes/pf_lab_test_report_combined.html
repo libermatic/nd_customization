@@ -103,7 +103,7 @@
     color: inherit;
   }
   .nd-rep-items > table th, .nd-rep-items > table td {
-    padding: 2pt !important;
+    padding: 3pt !important;
     line-height: 1.4;
   }
   .nd-rep-items tr.nd-separate > td {
@@ -155,6 +155,9 @@
 
   .nd-strong {
     font-weight: bold;
+  }
+  .nd-emphasize {
+    font-style: italic;
   }
   .nd-mono {
     font-family: mono;
@@ -255,7 +258,13 @@
                   {% set will_indent = not item.test_name and item.test_event %}
                   <tr class="{{ 'nd-separate' if will_separate else '' -}}
                   {{- 'nd-indent' if will_indent else ''  }}">
-                  <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
+                  <td>
+                    {{ item.test_name or item.test_event or '' }}
+                    {% if item.test_comment %}
+                    <br />
+                    <span class="nd-emphasize">{{ item.test_comment }}</span>
+                    {% endif %}
+                  </td>
                   <td class="text-right {{ 'nd-strong' if item.highlight else '' }}">{{ item.result_value or '' }}</td>
                   <td>{{ item.test_uom or '' }}</td>
                   <td>{{ item.normal_range|replace('\n', '<br />') if item.normal_range else '' }}</td>
