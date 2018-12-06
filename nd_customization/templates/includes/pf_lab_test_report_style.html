@@ -1,6 +1,6 @@
 {% set ack_height = '6em' %}
-<style media="screen">
 
+<style>
   @media screen {
     .print-format {
       padding: {{ page_margin or '10mm' }};
@@ -36,8 +36,11 @@
     height: calc({{ page_height or '297mm' }} - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * {{ page_margin or '10mm' }});
   }
   table.nd-page-layout > tbody > tr > td {
+    height: calc({{ page_height or '297mm' }} - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * {{ page_margin or '10mm' }});
     position: relative;
     padding-bottom: {{ ack_height }} !important;
+    display: flex;
+    flex-flow: column nowrap;
   }
   table.nd-page-layout > thead > tr {
     height: {{ header_height or '0mm' }};
@@ -93,6 +96,12 @@
     margin: 0;
   }
 
+  .nd-rep-items-short {
+    flex: auto;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
   .nd-rep-items > table, .nd-rep-items > div {
     margin: 0.8em 0;
     width: 100%;
@@ -103,9 +112,15 @@
     padding: 0 0 0.6em;
     color: inherit;
   }
+  .nd-rep-items-short > table > caption {
+    font-size: 1.3em;
+  }
   .nd-rep-items > table th, .nd-rep-items > table td {
     padding: 3pt !important;
     line-height: 1.4;
+  }
+  .nd-rep-items-short > table th, .nd-rep-items-short > table td {
+    font-size: 1.2em;
   }
   .nd-rep-items tr.nd-separate > td {
     font-weight: bold;
