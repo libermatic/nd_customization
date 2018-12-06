@@ -58,6 +58,13 @@ def change_test_loading(doc, template):
                 )
 
 
+def load_result_format(lab_test, template, prescription, invoice):
+    from erpnext.healthcare.doctype.lab_test.lab_test \
+        import load_result_format
+    load_result_format(lab_test, template, prescription, invoice)
+    change_test_loading(lab_test, template)
+
+
 @frappe.whitelist()
 def create_invoice(company, patient, lab_tests, prescriptions):
     from erpnext.healthcare.doctype.lab_test.lab_test import create_invoice

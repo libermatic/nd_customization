@@ -3,13 +3,13 @@ from __future__ import unicode_literals
 import frappe
 from frappe.utils import flt, fmt_money, cint
 from erpnext.healthcare.doctype.lab_test.lab_test \
-    import create_sample_collection, load_result_format
+    import create_sample_collection
 from erpnext.accounts.doctype.sales_invoice.sales_invoice \
     import get_bank_cash_account
 from toolz import pluck
 
 from nd_customization.api.workflow import apply_workflow
-from nd_customization.api.lab_test import change_test_loading
+from nd_customization.api.lab_test import load_result_format
 
 
 def validate(doc, method):
@@ -57,7 +57,6 @@ def on_submit(doc, method):
                             test, template, patient, doc.name
                         )
                         load_result_format(test, template, None, doc.name)
-                        change_test_loading(test, template)
                         frappe.db.set_value(
                             'Sales Invoice Item',
                             item.name,
