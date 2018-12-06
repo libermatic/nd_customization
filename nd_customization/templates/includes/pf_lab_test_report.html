@@ -98,7 +98,7 @@
                     {{ item.test_name or item.test_event or '' }}
                     {% if item.test_comment %}
                     <br />
-                    <span class="nd-emphasize">{{ item.test_comment }}</span>
+                    <span class="nd-emphasize nd-rep-comment">{{ item.test_comment }}</span>
                     {% endif %}
                   </td>
                   <td class="text-right {{ 'nd-strong' if item.highlight else '' }}">{{ item.result_value or '' }}</td>
