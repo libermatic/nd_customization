@@ -37,9 +37,7 @@ def after_insert(doc, method):
                 'sample_in_print',
                 template.sample_in_print,
             )
-        if template.test_template_type == 'Compound':
-            change_test_loading(doc, template)
-
+        change_test_loading(doc, template)
         if template.test_template_type == 'No Result' and not doc.test_name:
             update = {
                 'test_name': template.test_name,

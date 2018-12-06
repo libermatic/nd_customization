@@ -1,171 +1,3 @@
-{% set ack_height = '6em' %}
-
-<style>
-  @media screen {
-    .print-format {
-      padding: {{ page_margin or '10mm' }};
-    }
-  }
-  /* frappe pdf hack won't work with headers and footers tho */
-  @media print {
-    .print-format {
-      margin-left: {{ page_margin or '10mm' }}mm;
-      margin-right: {{ page_margin or '10mm' }}mm;
-    }
-  }
-  @page {
-    size: {{ page_size or 'A4' }};
-    margin: {{ page_margin  }};
-  }
-
-  table.nd-page-layout {
-    width: 100%;
-  }
-  table.nd-page-layout > thead > tr > td,
-  table.nd-page-layout > tbody > tr > td,
-  table.nd-page-layout > tfoot > tr > td {
-    padding: 0 !important;
-  }
-  table.nd-page-layout > thead {
-    display: table-header-group;
-  }
-  table.nd-page-layout > tfoot {
-    display: table-footer-group;
-  }
-  table.nd-page-layout > tbody > tr {
-    height: calc({{ page_height or '297mm' }} - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * {{ page_margin or '10mm' }});
-  }
-  table.nd-page-layout > tbody > tr > td {
-    height: calc({{ page_height or '297mm' }} - {{ header_height or '0mm' }} - {{ footer_height or '0mm' }} - 2 * {{ page_margin or '10mm' }});
-    position: relative;
-    padding-bottom: {{ ack_height }} !important;
-    display: flex;
-    flex-flow: column nowrap;
-  }
-  table.nd-page-layout > thead > tr {
-    height: {{ header_height or '0mm' }};
-  }
-  table.nd-page-layout > tfoot > tr {
-    height: {{ footer_height or '0mm' }};
-  }
-  table.nd-page-layout > tfoot > tr > td {
-    vertical-align: bottom !important;
-    position: relative;
-  }
-  table.nd-page-layout > tfoot > tr > td > div {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-  }
-
-  .nd-docstatus {
-    margin: 1em 0;
-  }
-  .nd-docstatus .badge {
-    font-variant: all-small-caps;
-    background-color: #36414c;
-    color: #fff;
-  }
-
-  .nd-rep-details {
-    border-top: 1px solid {{ style.border_color }};
-    border-bottom: 1px solid {{ style.border_color }};
-    padding: 0.4em 0;
-    line-height: 1.6;
-  }
-  .nd-rep-details dl {
-    margin: 0;
-  }
-  .nd-rep-details dl > * {
-    display: inline;
-    font-weight: normal;
-  }
-  .nd-rep-details dt {
-    min-width: 5em;
-  }
-  .nd-rep-details dt:after {
-    content: ':';
-    margin: 0 0.5em;
-  }
-
-  .nd-rep-title {
-    padding: 0.6em 0;
-  }
-  .nd-rep-title > h1 {
-    font-size: 1.3em;
-    margin: 0;
-  }
-
-  .nd-rep-items {
-    flex: auto;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-  }
-  .nd-rep-items > table, .nd-rep-items > div {
-    margin: 0.8em 0;
-    width: 100%;
-  }
-  .nd-rep-items > table > caption {
-    font-size: 1.3em;
-    font-weight: bold;
-    padding: 0 0 0.6em;
-    color: inherit;
-  }
-  .nd-rep-items > table th, .nd-rep-items > table td {
-    font-size: 1.2em;
-    padding: 3pt !important;
-    line-height: 1.4;
-  }
-  .nd-rep-items tr.nd-separate > td {
-    font-weight: bold;
-    border-top: 1px solid {{ style.border_color }};
-  }
-  .nd-rep-items tr.nd-indent > td:first-of-type {
-    padding-left: 1.5em !important;
-  }
-
-  .nd-rep-custom {
-    padding: 0.4em 0;
-  }
-
-  .nd-rep-comment {
-    padding: 0.4em 0;
-  }
-  .nd-rep-comment > h3 {
-    font-size: 1em;
-    margin: 0 0 0.3em;
-    padding-bottom: 0.1em;
-    border-bottom: 1px solid {{ style.border_color }};
-  }
-  .nd-rep-comment > p {
-    font-size: 0.9em;
-  }
-
-  .nd-rep-ack {
-    position: absolute;
-    bottom: 0;
-    height: {{ ack_height }};
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-around;
-    padding-top: 1.8em;
-    font-size: 0.95em;
-  }
-  .nd-rep-ack > div {
-    padding: 0.2em 0 0.5em;
-    text-align: center;
-  }
-
-  .nd-strong {
-    font-weight: bold;
-  }
-  .nd-mono {
-    font-family: mono;
-  }
-</style>
-
 {% set page_header, page_footer = frappe.db.get_value(
   'Letter Head', nd_letter_head, ['content', 'footer']
   ) if nd_letter_head else ('', '')
@@ -243,7 +75,7 @@
           <h1>Department of {{ doc.department }}</h1>
         </section>
 
-          <section class="nd-rep-items">
+          <section class="nd-rep-items nd-rep-items-short">
             {% if doc.normal_test_items %}
             <table>
               <caption>{{ doc.test_name }}</caption>
@@ -262,7 +94,13 @@
                   {% set will_indent = not item.test_name and item.test_event %}
                   <tr class="{{ 'nd-separate' if will_separate else '' -}}
                   {{- 'nd-indent' if will_indent else ''  }}">
-                  <td>{{ item.test_name or '' }} {{ item.test_event or '' }}</td>
+                  <td>
+                    {{ item.test_name or item.test_event or '' }}
+                    {% if item.test_comment %}
+                    <br />
+                    <span class="nd-emphasize">{{ item.test_comment }}</span>
+                    {% endif %}
+                  </td>
                   <td class="text-right {{ 'nd-strong' if item.highlight else '' }}">{{ item.result_value or '' }}</td>
                   <td>{{ item.test_uom or '' }}</td>
                   <td>{{ item.normal_range|replace('\n', '<br />') if item.normal_range else '' }}</td>

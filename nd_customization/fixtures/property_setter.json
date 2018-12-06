@@ -491,5 +491,39 @@
   "property": "reqd", 
   "property_type": "Check", 
   "value": "1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Normal Test Items", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "test_comment", 
+  "modified": "2018-12-06 20:23:51.625326", 
+  "name": "Normal Test Items-test_comment-in_list_view", 
+  "property": "in_list_view", 
+  "property_type": "Check", 
+  "value": "0"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Normal Test Items", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "test_comment", 
+  "modified": "2018-12-06 20:23:51.635336", 
+  "name": "Normal Test Items-test_comment-hidden", 
+  "property": "hidden", 
+  "property_type": "Check", 
+  "value": "0"
  }
 ]
