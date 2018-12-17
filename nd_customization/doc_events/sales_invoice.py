@@ -147,7 +147,7 @@ def _make_lab_test(patient, template, invoice, result_date):
         'patient_name': patient.patient_name,
         'patient_age': patient.get_age(),
         'patient_sex': patient.sex,
-        'doctor': invoice.ref_physician,
+        'physician': invoice.ref_physician,
         'email': patient.email,
         'mobile': patient.mobile,
         'company': invoice.company,
