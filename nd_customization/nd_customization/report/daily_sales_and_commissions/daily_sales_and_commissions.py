@@ -10,32 +10,32 @@ from toolz import compose, assoc, get, concatv, merge, pluck
 
 
 def execute(filters=None):
-    return get_columns(), compose(
-        partial(map, make_row)
-    )(get_data(filters))
+    return get_columns(), compose(partial(map, make_row))(get_data(filters))
 
 
 def get_columns():
     return [
-        'Sales Invoice:Link/Sales Invoice:120',
-        'Patient ID:Link/Patient:90',
-        'Time:Datetime:150',
-        'Amount:Currency:90',
-        'Discount:Currency:90',
-        'Total:Currency:90',
-        'Paid:Currency:90',
-        'Outstanding:Currency:90',
-        'Referring Physician:Link/Physician:120',
-        'Sales Partner:Link/Sales Partner:120',
+        "Sales Invoice:Link/Sales Invoice:120",
+        "Patient ID:Link/Patient:90",
+        "Patient Name:Data:120",
+        "Time:Datetime:150",
+        "Amount:Currency:90",
+        "Discount:Currency:90",
+        "Total:Currency:90",
+        "Paid:Currency:90",
+        "Outstanding:Currency:90",
+        "Referring Physician:Link/Physician:120",
+        "Sales Partner:Link/Sales Partner:120",
     ]
 
 
 def add_filter_clause(filters, field):
     def fn(clauses):
         if filters.get(field):
-            clause = ['{field}=%({field})s'.format(field=field)]
+            clause = ["{field}=%({field})s".format(field=field)]
             return concatv(clauses, clause)
         return clauses
+
     return fn
 
 
@@ -45,38 +45,27 @@ def add_filter_value(filters, field):
             value = {field: filters.get(field)}
             return merge(values, value)
         return values
+
     return fn
 
 
 def make_filter_composer(filters, fields):
     def fn(add_fn):
-        return compose(
-            *map(
-                lambda field: add_fn(filters, field),
-                fields,
-            )
-        )
+        return compose(*map(lambda field: add_fn(filters, field), fields))
+
     return fn
 
 
 def make_conditions(filters):
-    init_clauses = [
-        'docstatus=1',
-        'posting_date BETWEEN %(from_date)s AND %(to_date)s',
-    ]
+    init_clauses = ["docstatus=1", "posting_date BETWEEN %(from_date)s AND %(to_date)s"]
     init_values = {
-        'from_date': filters.get('from_date'),
-        'to_date': filters.get('to_date'),
+        "from_date": filters.get("from_date"),
+        "to_date": filters.get("to_date"),
     }
-    filter_composer = make_filter_composer(
-        filters, ['patient', 'sales_partner']
-    )
+    filter_composer = make_filter_composer(filters, ["patient", "sales_partner"])
     make_clauses = filter_composer(add_filter_clause)
     make_values = filter_composer(add_filter_value)
-    return (
-        " AND ".join(make_clauses(init_clauses)),
-        make_values(init_values),
-    )
+    return (" AND ".join(make_clauses(init_clauses)), make_values(init_values))
 
 
 def get_data(filters):
@@ -86,6 +75,7 @@ def get_data(filters):
             SELECT
                 name AS sales_invoice,
                 patient,
+                patient_name,
                 ref_physician AS physician,
                 posting_date,
                 posting_time,
@@ -97,38 +87,44 @@ def get_data(filters):
                 sales_partner
             FROM `tabSales Invoice`
             WHERE {clauses}
-        """.format(clauses=clauses),
+        """.format(
+            clauses=clauses
+        ),
         values=values,
         as_dict=1,
     )
-    sumby = compose(
-        lambda x: reduce(add, x, 0.0),
-        partial(pluck, seqs=data),
-    )
-    return data + [{
-        'sales_invoice': 'Total',
-        'amount': sumby('amount'),
-        'discount': sumby('discount'),
-        'total': sumby('total'),
-        'paid': sumby('paid'),
-        'outstanding': sumby('outstanding'),
-    }]
+    sumby = compose(lambda x: reduce(add, x, 0.0), partial(pluck, seqs=data))
+    return data + [
+        {
+            "sales_invoice": "Total",
+            "amount": sumby("amount"),
+            "discount": sumby("discount"),
+            "total": sumby("total"),
+            "paid": sumby("paid"),
+            "outstanding": sumby("outstanding"),
+        }
+    ]
 
 
 def make_row(row):
-    posting_datetime = datetime.combine(
-        row.get('posting_date'), datetime.min.time()
-    ) + row.get('posting_time') if row.get('posting_date') else ''
-    set_datetime = partial(
-        assoc, key='posting_datetime', value=posting_datetime
+    posting_datetime = (
+        datetime.combine(row.get("posting_date"), datetime.min.time())
+        + row.get("posting_time")
+        if row.get("posting_date")
+        else ""
     )
+    set_datetime = partial(assoc, key="posting_datetime", value=posting_datetime)
     keys = [
-        'sales_invoice', 'patient', 'posting_datetime',
-        'amount', 'discount', 'total',
-        'paid', 'outstanding',
-        'physician', 'sales_partner',
+        "sales_invoice",
+        "patient",
+        "patient_name",
+        "posting_datetime",
+        "amount",
+        "discount",
+        "total",
+        "paid",
+        "outstanding",
+        "physician",
+        "sales_partner",
     ]
-    return compose(
-        partial(get, keys, default=''),
-        set_datetime,
-    )(row)
+    return compose(partial(get, keys, default=""), set_datetime)(row)
