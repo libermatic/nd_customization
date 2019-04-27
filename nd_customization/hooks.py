@@ -52,7 +52,6 @@ fixtures = [
                     "Normal Test Template-test_uom-depends_on",
                     "Normal Test Template-normal_range-depends_on",
                     "Patient-dob-reqd",
-                    "Patient-mobile-reqd",
                     "Healthcare Settings-require_test_result_approval-hidden",
                 ],
             ]
