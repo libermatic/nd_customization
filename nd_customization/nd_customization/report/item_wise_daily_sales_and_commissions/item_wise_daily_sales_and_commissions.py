@@ -42,6 +42,19 @@ def _get_columns():
             "width": 120,
         },
         {
+            "label": _("Test Code"),
+            "fieldname": "test_code",
+            "fieldtype": "Link",
+            "options": "Lab Test Template",
+            "width": 90,
+        },
+        {
+            "label": _("Test Name"),
+            "fieldname": "test_name",
+            "fieldtype": "Data",
+            "width": 120,
+        },
+        {
             "label": _("Time"),
             "fieldname": "posting_datetime",
             "fieldtype": "Datetime",
